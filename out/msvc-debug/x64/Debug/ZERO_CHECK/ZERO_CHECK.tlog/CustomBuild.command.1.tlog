@@ -1,0 +1,10 @@
+^C:\USERS\MARKO\ARENA-ENGINE\OUT\MSVC-DEBUG\CMAKEFILES\464C3ABBC63B5102A4EA4FF1D5CB32E3\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Marko/arena-engine -BC:/Users/Marko/arena-engine/out/msvc-debug --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Marko/arena-engine/out/msvc-debug/arena.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

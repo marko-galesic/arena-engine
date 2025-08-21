@@ -1,0 +1,13 @@
+{
+  "name": "arena-engine",
+  "version": "0.0.1",
+  "dependencies": [
+    "glfw3",
+    "glm",
+    "stb",
+    "miniaudio",
+    "imgui",
+    "catch2"
+  ],
+  "builtin-baseline": "9e7bfb1bcd1fa2e6e0755c4076441360b9c9ded7"
+}

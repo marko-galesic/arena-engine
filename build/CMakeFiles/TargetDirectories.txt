@@ -1,0 +1,6 @@
+C:/Users/Marko/arena-engine/build/CMakeFiles/arena.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/arena_tests.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/config_tests.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/run_tests.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/ZERO_CHECK.dir

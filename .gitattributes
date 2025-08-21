@@ -1,0 +1,25 @@
+* text=auto eol=crlf
+
+*.cpp text eol=crlf
+*.hpp text eol=crlf
+*.h text eol=crlf
+*.cmake text eol=crlf
+*.txt text eol=crlf
+*.json text eol=crlf
+*.md text eol=crlf
+
+*.exe binary
+*.dll binary
+*.lib binary
+*.obj binary
+*.pdb binary
+*.ilk binary
+*.exp binary
+*.pch binary
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.bmp binary
+*.ico binary
+*.cur binary

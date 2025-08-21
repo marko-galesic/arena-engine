@@ -1,0 +1,48 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 26 },
+  "configurePresets": [
+    {
+      "name": "msvc-debug",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "out/msvc-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "msvc-release",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "out/msvc-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "ninja-debug",
+      "generator": "Ninja",
+      "binaryDir": "out/ninja-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ninja-release",
+      "generator": "Ninja",
+      "binaryDir": "out/ninja-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "build-debug", "configurePreset": "msvc-debug" },
+    { "name": "build-release", "configurePreset": "msvc-release" },
+    { "name": "build-ninja-debug", "configurePreset": "ninja-debug" },
+    { "name": "build-ninja-release", "configurePreset": "ninja-release" }
+  ],
+  "testPresets": [
+    { "name": "test-debug", "configurePreset": "msvc-debug" },
+    { "name": "test-ninja-debug", "configurePreset": "ninja-debug" }
+  ]
+}
