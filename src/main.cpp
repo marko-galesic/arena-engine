@@ -38,11 +38,15 @@ void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
         lastX = xpos;
         lastY = ypos;
         firstMove = false;
+        std::cout << "First mouse position: " << xpos << ", " << ypos << std::endl;
         return;
     }
     
     double dx = xpos - lastX;
     double dy = ypos - lastY;
+    
+    // Debug: Always log mouse movement to see if callback is working
+    std::cout << "Mouse callback: pos(" << xpos << ", " << ypos << ") delta(" << dx << ", " << dy << ")" << std::endl;
     
     arena::handleMouseMove(g_inputState, dx, dy);
     
@@ -163,6 +167,53 @@ int main(int argc, char* argv[]) {
         // Begin frame for input system
         if (!args.server) {
             arena::beginFrame(g_inputState);
+            
+            // Debug: Show input state changes
+            static bool lastW = false, lastA = false, lastS = false, lastD = false;
+            static bool lastLeftClick = false, lastRightClick = false;
+            
+            // Check for key state changes
+            if (g_inputState.keys[GLFW_KEY_W] != lastW) {
+                lastW = g_inputState.keys[GLFW_KEY_W];
+                if (lastW) LOG("W key PRESSED");
+                else LOG("W key RELEASED");
+            }
+            
+            if (g_inputState.keys[GLFW_KEY_A] != lastA) {
+                lastA = g_inputState.keys[GLFW_KEY_A];
+                if (lastA) LOG("A key PRESSED");
+                else LOG("A key RELEASED");
+            }
+            
+            if (g_inputState.keys[GLFW_KEY_S] != lastS) {
+                lastS = g_inputState.keys[GLFW_KEY_S];
+                if (lastS) LOG("S key PRESSED");
+                else LOG("S key RELEASED");
+            }
+            
+            if (g_inputState.keys[GLFW_KEY_D] != lastD) {
+                lastD = g_inputState.keys[GLFW_KEY_D];
+                if (lastD) LOG("D key PRESSED");
+                else LOG("D key RELEASED");
+            }
+            
+            // Check for mouse button changes
+            if (g_inputState.mouseButtons[GLFW_MOUSE_BUTTON_LEFT] != lastLeftClick) {
+                lastLeftClick = g_inputState.mouseButtons[GLFW_MOUSE_BUTTON_LEFT];
+                if (lastLeftClick) LOG("Left mouse button PRESSED");
+                else LOG("Left mouse button RELEASED");
+            }
+            
+            if (g_inputState.mouseButtons[GLFW_MOUSE_BUTTON_RIGHT] != lastRightClick) {
+                lastRightClick = g_inputState.mouseButtons[GLFW_MOUSE_BUTTON_RIGHT];
+                if (lastRightClick) LOG("Right mouse button PRESSED");
+                else LOG("Right mouse button RELEASED");
+            }
+            
+            // Show mouse movement (only when there is movement)
+            if (g_inputState.mouseDx != 0.0 || g_inputState.mouseDy != 0.0) {
+                LOG("Mouse moved: dx=" << g_inputState.mouseDx << " dy=" << g_inputState.mouseDy);
+            }
         }
         
         // Check if we should exit based on --runForMs FIRST (before anything else)
