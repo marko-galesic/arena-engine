@@ -43,6 +43,7 @@
   ],
   "testPresets": [
     { "name": "test-debug", "configurePreset": "msvc-debug" },
+    { "name": "test-release", "configurePreset": "msvc-release" },
     { "name": "test-ninja-debug", "configurePreset": "ninja-debug" }
   ]
 }

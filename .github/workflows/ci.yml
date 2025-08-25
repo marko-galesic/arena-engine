@@ -1,0 +1,33 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 9e7bfb1bcd1fa2e6e0755c4076441360b9c9ded7
+          vcpkgDirectory: ${{ github.workspace }}/vcpkg
+          
+      - name: Configure
+        run: cmake -S . -B out/msvc-release --preset msvc-release -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+        
+      - name: Build
+        run: cmake --build out/msvc-release --config Release -- -v
+        
+      - name: Test
+        run: ctest --test-dir out/msvc-release -C Release --output-on-failure
+        
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: arena-windows-release
+          path: |
+            out/msvc-release/arena.exe
+            out/msvc-release/**/*.pdb
+          retention-days: 30

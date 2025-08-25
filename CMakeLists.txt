@@ -9,13 +9,13 @@ add_executable(arena
   src/app/Config.cpp
 )
 
-# Tests (simplified without Catch2 for now)
+# Tests
 add_executable(arena_tests tests/test_clock.cpp src/app/Clock.cpp)
 add_executable(config_tests tests/test_config.cpp src/app/Config.cpp)
 
-# Simple test runner
-add_custom_target(run_tests
-  COMMAND arena_tests && config_tests
-  DEPENDS arena_tests config_tests
-  COMMENT "Running arena tests"
-)
+# Enable CTest
+enable_testing()
+
+# Add tests to CTest
+add_test(NAME ClockTests COMMAND arena_tests)
+add_test(NAME ConfigTests COMMAND config_tests)

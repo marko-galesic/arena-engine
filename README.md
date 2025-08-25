@@ -1,5 +1,9 @@
 # Arena Engine
 
+[![CI](https://github.com/your-username/arena-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/arena-engine/actions/workflows/ci.yml)
+
+> **Note**: Replace `your-username` with your actual GitHub username in the badge URL above.
+
 A CMake-based game engine project with locked dependencies via vcpkg.
 
 ## Prerequisites
@@ -8,6 +12,38 @@ A CMake-based game engine project with locked dependencies via vcpkg.
 - Ninja build system
 - vcpkg with VCPKG_ROOT environment variable set
 - Visual Studio 2019+ or Clang-cl
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration on Windows:
+
+- **Builds**: Debug and Release configurations using MSVC
+- **Testing**: Runs all tests with CTest
+- **Artifacts**: Uploads `arena.exe` and PDB files for Windows Release builds
+- **Triggers**: Runs on every push and pull request
+
+The CI workflow automatically:
+1. Sets up vcpkg with cached dependencies
+2. Configures the project using CMake presets
+3. Builds the project in Release mode
+4. Runs all tests
+5. Uploads build artifacts for download
+
+### Local Testing
+
+You can test the same workflow locally using the provided scripts:
+
+```powershell
+# PowerShell (recommended)
+.\scripts\test-local.ps1
+```
+
+```batch
+# Batch file alternative
+.\scripts\test-local.bat
+```
+
+These scripts mirror the CI workflow and help ensure your local environment matches the CI environment.
 
 ## Building
 
