@@ -27,7 +27,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Build
 Write-Host "Building project..." -ForegroundColor Cyan
-cmake --build out/msvc-release --config Release
+cmake --build out/msvc-release --config Release --verbose
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Build failed"
     exit 1

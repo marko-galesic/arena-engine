@@ -18,7 +18,7 @@ jobs:
         run: cmake -S . -B out/msvc-release --preset msvc-release -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
         
       - name: Build
-        run: cmake --build out/msvc-release --config Release -- -v
+        run: cmake --build out/msvc-release --config Release --verbose
         
       - name: Test
         run: ctest --test-dir out/msvc-release -C Release --output-on-failure

@@ -29,7 +29,7 @@ if errorlevel 1 (
 
 REM Build
 echo Building project...
-cmake --build out/msvc-release --config Release
+cmake --build out/msvc-release --config Release --verbose
 if errorlevel 1 (
     echo ERROR: Build failed
     exit /b 1
