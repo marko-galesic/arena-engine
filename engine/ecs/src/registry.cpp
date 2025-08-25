@@ -1,9 +1,5 @@
 #include "arena/ecs/registry.hpp"
 
 namespace arena::ecs {
-
-// Placeholder implementation - will be expanded in future tickets
-Registry::Registry() = default;
-Registry::~Registry() = default;
-
+// All implementation is now in the header file as templates
 } // namespace arena::ecs
