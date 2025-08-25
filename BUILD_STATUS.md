@@ -48,7 +48,7 @@ cmake --preset msvc-debug
 cmake --build --preset build-debug
 
 # Test
-build-simple\arena_tests.exe
+build\Debug\arena_tests.exe
 ```
 
 ## Fallback Strategy
