@@ -3,25 +3,21 @@
 #include <thread>
 #include <string>
 #include <vector>
-#include <windows.h>
 #include "app/Clock.hpp"
 #include "app/Config.hpp"
 
-// High-resolution timer wrapper using QueryPerformanceCounter
+// High-resolution timer wrapper using standard C++ chrono
 static double NowSeconds() {
-    static LARGE_INTEGER f; 
-    static bool init = false;
-    if (!init) { 
-        QueryPerformanceFrequency(&f); 
-        init = true; 
-    }
-    LARGE_INTEGER c; 
-    QueryPerformanceCounter(&c);
-    return double(c.QuadPart) / double(f.QuadPart);
+    static auto start = std::chrono::high_resolution_clock::now();
+    auto now = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(now - start);
+    return duration.count() / 1e9;
 }
 
 // Simple logging macro with timestamps
 #define LOG(msg) std::cout << "[" << NowSeconds() << "] " << msg << std::endl
+
+
 
 // Simple command line argument parser
 struct Args {

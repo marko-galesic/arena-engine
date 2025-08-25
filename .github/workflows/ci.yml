@@ -4,6 +4,9 @@ on: [push, pull_request]
 jobs:
   windows:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        config: [debug, release]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -15,19 +18,85 @@ jobs:
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
           
       - name: Configure
-        run: cmake -S . -B out/msvc-release --preset msvc-release -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+        run: cmake -S . -B out/msvc-${{ matrix.config }} --preset msvc-${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
         
       - name: Build
-        run: cmake --build out/msvc-release --config Release --verbose
+        run: cmake --build out/msvc-${{ matrix.config }} --config ${{ matrix.config }} --verbose
         
       - name: Test
-        run: ctest --test-dir out/msvc-release -C Release --output-on-failure
+        run: ctest --test-dir out/msvc-${{ matrix.config }} -C ${{ matrix.config }} --output-on-failure
+        
+      - name: Test Headless Integration
+        run: ctest --test-dir out/msvc-${{ matrix.config }} -C ${{ matrix.config }} -R Headless --output-on-failure
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: arena-windows-release
+          name: arena-windows-${{ matrix.config }}
           path: |
-            out/msvc-release/arena.exe
-            out/msvc-release/**/*.pdb
+            out/msvc-${{ matrix.config }}/arena.exe
+            out/msvc-${{ matrix.config }}/**/*.pdb
           retention-days: 30
+
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config: [debug, release]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build
+        
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 9e7bfb1bcd1fa2e6e0755c4076441360b9c9ded7
+          vcpkgDirectory: ${{ github.workspace }}/vcpkg
+          
+      - name: Configure
+        run: cmake -S . -B out/ninja-${{ matrix.config }} --preset ninja-${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+        
+      - name: Build
+        run: cmake --build out/ninja-${{ matrix.config }} --config ${{ matrix.config }} --verbose
+        
+      - name: Test
+        run: ctest --test-dir out/ninja-${{ matrix.config }} -C ${{ matrix.config }} --output-on-failure
+        
+      - name: Test Headless Integration
+        run: ctest --test-dir out/ninja-${{ matrix.config }} -C ${{ matrix.config }} -R Headless --output-on-failure
+
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        config: [debug, release]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Install dependencies
+        run: |
+          brew install cmake ninja
+        
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 9e7bfb1bcd1fa2e6e0755c4076441360b9c9ded7
+          vcpkgDirectory: ${{ github.workspace }}/vcpkg
+          
+      - name: Configure
+        run: cmake -S . -B out/ninja-${{ matrix.config }} --preset ninja-${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+        
+      - name: Build
+        run: cmake --build out/ninja-${{ matrix.config }} --config ${{ matrix.config }} --verbose
+        
+      - name: Test
+        run: ctest --test-dir out/ninja-${{ matrix.config }} -C ${{ matrix.config }} --output-on-failure
+        
+      - name: Test Headless Integration
+        run: ctest --test-dir out/ninja-${{ matrix.config }} -C ${{ matrix.config }} -R Headless --output-on-failure
