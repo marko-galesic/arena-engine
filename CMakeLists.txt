@@ -33,3 +33,25 @@ enable_testing()
 add_test(NAME ClockTests COMMAND arena_tests)
 add_test(NAME ConfigTests COMMAND config_tests)
 add_test(NAME Headless COMMAND it_headless)
+
+# ---- E1 targets (Core, Contracts, ECS) ----
+add_library(arena_core INTERFACE)
+target_include_directories(arena_core INTERFACE engine/core/include)
+
+add_library(arena_contracts INTERFACE)
+target_include_directories(arena_contracts INTERFACE engine/contracts/include)
+
+add_library(arena_ecs STATIC
+  engine/ecs/src/registry.cpp
+)
+target_include_directories(arena_ecs PUBLIC engine/ecs/include)
+target_link_libraries(arena_ecs PUBLIC arena_core)
+
+# Tests (Catch2 is in vcpkg manifest)
+find_package(Catch2 CONFIG REQUIRED)
+add_executable(e1_tests
+  tests/e1/test_ecs_basic.cpp
+  tests/e1/test_contracts_compile.cpp
+)
+target_link_libraries(e1_tests PRIVATE arena_core arena_contracts arena_ecs Catch2::Catch2WithMain)
+add_test(NAME e1_tests COMMAND e1_tests)
