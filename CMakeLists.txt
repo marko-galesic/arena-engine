@@ -52,6 +52,7 @@ find_package(Catch2 CONFIG REQUIRED)
 add_executable(e1_tests
   tests/e1/test_ecs_basic.cpp
   tests/e1/test_contracts_compile.cpp
+  tests/e1/test_components_use.cpp
 )
 target_link_libraries(e1_tests PRIVATE arena_core arena_contracts arena_ecs Catch2::Catch2WithMain)
 add_test(NAME e1_tests COMMAND e1_tests)
