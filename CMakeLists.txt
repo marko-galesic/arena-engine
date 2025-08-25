@@ -20,7 +20,8 @@ add_executable(arena
 )
 
 # Set include directories for arena
-target_include_directories(arena PRIVATE engine/core/include)
+target_include_directories(arena PRIVATE engine/core/include engine/ecs/include)
+target_link_libraries(arena PRIVATE arena_ecs)
 
 # Find and link GLFW
 find_package(glfw3 REQUIRED)
@@ -51,6 +52,7 @@ target_include_directories(arena_contracts INTERFACE engine/contracts/include)
 
 add_library(arena_ecs STATIC
   engine/ecs/src/registry.cpp
+  engine/ecs/src/camera_system.cpp
 )
 target_include_directories(arena_ecs PUBLIC engine/ecs/include)
 target_link_libraries(arena_ecs PUBLIC arena_core)
@@ -66,11 +68,12 @@ add_executable(e1_tests
 target_link_libraries(e1_tests PRIVATE arena_core arena_contracts arena_ecs Catch2::Catch2WithMain)
 add_test(NAME e1_tests COMMAND e1_tests)
 
-# E2 tests (Input System)
+# E2 tests (Input System + Camera System)
 add_executable(e2_tests
   tests/e2/test_input.cpp
+  tests/e2/test_camera.cpp
   engine/core/src/input.cpp
 )
-target_include_directories(e2_tests PRIVATE engine/core/include)
-target_link_libraries(e2_tests PRIVATE arena_core Catch2::Catch2WithMain glfw)
+target_include_directories(e2_tests PRIVATE engine/core/include engine/ecs/include)
+target_link_libraries(e2_tests PRIVATE arena_core arena_ecs Catch2::Catch2WithMain glfw)
 add_test(NAME e2_tests COMMAND e2_tests)

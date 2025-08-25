@@ -35,4 +35,9 @@ struct NetworkReplicated {
   uint32_t netId{0};
 };
 
+struct CameraController {
+  float moveSpeed{5.0f};
+  float lookSensitivity{0.002f};
+};
+
 } // namespace arena::ecs

@@ -7,6 +7,8 @@
 #include "app/Clock.hpp"
 #include "app/Config.hpp"
 #include "arena/input.hpp"
+#include "arena/ecs/registry.hpp"
+#include "arena/ecs/camera_system.hpp"
 
 // High-resolution timer wrapper using standard C++ chrono
 static double NowSeconds() {
@@ -21,6 +23,11 @@ static double NowSeconds() {
 
 // Global input state
 static arena::InputState g_inputState;
+
+// Global ECS registry and camera system
+static arena::ecs::Registry g_registry;
+static arena::ecs::CameraSystem g_cameraSystem;
+static arena::ecs::Entity g_cameraEntityId = 0;
 
 // Input state accessor
 arena::InputState& getInputState() { return g_inputState; }
@@ -143,6 +150,12 @@ int main(int argc, char* argv[]) {
         glfwMakeContextCurrent(window);
         
         LOG("GLFW window initialized successfully");
+        
+        // Create camera entity with Transform and CameraController components
+        g_cameraEntityId = g_registry.create();
+        g_registry.add<arena::ecs::Transform>(g_cameraEntityId, {{0, 0, 5}, {0, 0, 0}, {1, 1, 1}});
+        g_registry.add<arena::ecs::CameraController>(g_cameraEntityId, {5.0f, 0.002f});
+        LOG("Created camera entity with ID: " << g_cameraEntityId);
     }
     
     // Initialize clock with config
@@ -168,8 +181,12 @@ int main(int argc, char* argv[]) {
         if (!args.server) {
             arena::beginFrame(g_inputState);
             
+            // Update camera system with current input state
+            g_cameraSystem.update(frame, g_inputState, g_registry);
+            
             // Debug: Show input state changes
             static bool lastW = false, lastA = false, lastS = false, lastD = false;
+            static bool lastSpace = false, lastC = false;
             static bool lastLeftClick = false, lastRightClick = false;
             
             // Check for key state changes
@@ -197,6 +214,18 @@ int main(int argc, char* argv[]) {
                 else LOG("D key RELEASED");
             }
             
+            if (g_inputState.keys[GLFW_KEY_SPACE] != lastSpace) {
+                lastSpace = g_inputState.keys[GLFW_KEY_SPACE];
+                if (lastSpace) LOG("SPACE key PRESSED");
+                else LOG("SPACE key RELEASED");
+            }
+            
+            if (g_inputState.keys[GLFW_KEY_C] != lastC) {
+                lastC = g_inputState.keys[GLFW_KEY_C];
+                if (lastC) LOG("C key PRESSED");
+                else LOG("C key RELEASED");
+            }
+            
             // Check for mouse button changes
             if (g_inputState.mouseButtons[GLFW_MOUSE_BUTTON_LEFT] != lastLeftClick) {
                 lastLeftClick = g_inputState.mouseButtons[GLFW_MOUSE_BUTTON_LEFT];
@@ -213,6 +242,27 @@ int main(int argc, char* argv[]) {
             // Show mouse movement (only when there is movement)
             if (g_inputState.mouseDx != 0.0 || g_inputState.mouseDy != 0.0) {
                 LOG("Mouse moved: dx=" << g_inputState.mouseDx << " dy=" << g_inputState.mouseDy);
+            }
+            
+            // Show current key states every 60 frames for debugging
+            static int keyDebugCounter = 0;
+            if (++keyDebugCounter % 60 == 0) {
+                LOG("Key states - W:" << g_inputState.keys[GLFW_KEY_W] 
+                    << " A:" << g_inputState.keys[GLFW_KEY_A] 
+                    << " S:" << g_inputState.keys[GLFW_KEY_S] 
+                    << " D:" << g_inputState.keys[GLFW_KEY_D]
+                    << " SPACE:" << g_inputState.keys[GLFW_KEY_SPACE]
+                    << " C:" << g_inputState.keys[GLFW_KEY_C]);
+            }
+            
+            // Show camera position and rotation
+            static int logCounter = 0;
+            if (++logCounter % 60 == 0) { // Log every 60 frames (about once per second at 60Hz)
+                auto* cameraTransform = g_registry.get<arena::ecs::Transform>(g_cameraEntityId);
+                if (cameraTransform) {
+                    LOG("Camera pos: (" << cameraTransform->pos[0] << ", " << cameraTransform->pos[1] << ", " << cameraTransform->pos[2] << ")");
+                    LOG("Camera rot: (" << cameraTransform->rotYawPitchRoll[0] << ", " << cameraTransform->rotYawPitchRoll[1] << ", " << cameraTransform->rotYawPitchRoll[2] << ")");
+                }
             }
         }
         
