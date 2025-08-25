@@ -944,3 +944,1353 @@ events:
       Microsoft (R) Incremental Linker Version 14.44.35215.0
       Copyright (C) Microsoft Corporation.  All rights reserved.
 ...
+
+---
+events:
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "CMakeLists.txt:12 (find_package)"
+    name: "Catch2"
+    configs:
+      -
+        filename: "Catch2Config.cmake"
+        kind: "cmake"
+      -
+        filename: "catch2-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "required_explicit"
+      quiet: false
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "Catch2"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/Catch2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/catch2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/Catch2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/catch2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/catch2_x64-windows/Catch2Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/catch2_x64-windows/catch2-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found:
+      path: "C:/Users/Marko/arena-engine/vcpkg/packages/catch2_x64-windows/share/catch2/Catch2Config.cmake"
+      mode: "config"
+      version: "3.9.1"
+    search_context:
+      CMAKE_PREFIX_PATH:
+        - "C:/Users/Marko/arena-engine/vcpkg/packages"
+      ENV{PATH}:
+        - "C:\\Java\\jdk-17\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\Common Files\\Autodesk Shared\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\PuTTY\\"
+        - "C:\\Gradle\\gradle-8.6\\bin"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "D:\\Progams\\Git\\cmd"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Users\\Marko\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Program Files\\@boxcli\\bin"
+        - "C:\\Users\\Marko\\.dotnet\\tools"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin"
+        - "C:\\platform-tools"
+        - "C:\\Users\\Marko\\AppData\\Roaming\\npm"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/arena"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/CMake"
+        - "C:/Program Files (x86)/arena"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/Internal/CheckSourceCompiles.cmake:104 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CheckCXXSourceCompiles.cmake:103 (cmake_check_source_compiles)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/FindThreads.cmake:99 (check_cxx_source_compiles)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindDependencyMacro.cmake:78 (find_package)"
+      - "vcpkg/packages/glfw3_x64-windows/share/glfw3/glfw3Config.cmake:2 (find_dependency)"
+      - "CMakeLists.txt:28 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-nv9znx"
+      binary: "C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-nv9znx"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/Marko/arena-engine/vcpkg/packages/catch2_x64-windows/share/catch2"
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-nv9znx'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_d4e8d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.14.19+164abd434 for .NET Framework
+        Build started 8/24/2025 8:31:09 PM.
+        
+        Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\cmTC_d4e8d.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_d4e8d.dir\\Debug\\".
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          Creating directory "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\Debug\\".
+          Creating directory "cmTC_d4e8d.dir\\Debug\\cmTC_d4e8d.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_d4e8d.dir\\Debug\\cmTC_d4e8d.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_d4e8d.dir\\Debug\\cmTC_d4e8d.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /std:c++20 /Fo"cmTC_d4e8d.dir\\Debug\\\\" /Fd"cmTC_d4e8d.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\src.cxx"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35215 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /std:c++20 /Fo"cmTC_d4e8d.dir\\Debug\\\\" /Fd"cmTC_d4e8d.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\src.cxx"
+          src.cxx
+        C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\src.cxx(1,10): error C1083: Cannot open include file: 'pthread.h': No such file or directory [C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\cmTC_d4e8d.vcxproj]
+        Done Building Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\cmTC_d4e8d.vcxproj" (default targets) -- FAILED.
+        
+        Build FAILED.
+        
+        "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\cmTC_d4e8d.vcxproj" (default target) (1) ->
+        (ClCompile target) -> 
+          C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\src.cxx(1,10): error C1083: Cannot open include file: 'pthread.h': No such file or directory [C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nv9znx\\cmTC_d4e8d.vcxproj]
+        
+            0 Warning(s)
+            1 Error(s)
+        
+        Time Elapsed 00:00:01.12
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CheckLibraryExists.cmake:154 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/FindThreads.cmake:112 (check_library_exists)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/FindThreads.cmake:175 (_threads_check_lib)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindDependencyMacro.cmake:78 (find_package)"
+      - "vcpkg/packages/glfw3_x64-windows/share/glfw3/glfw3Config.cmake:2 (find_dependency)"
+      - "CMakeLists.txt:28 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthreads"
+    directories:
+      source: "C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-qib0o0"
+      binary: "C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-qib0o0"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/Marko/arena-engine/vcpkg/packages/catch2_x64-windows/share/catch2"
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREADS_CREATE"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-qib0o0'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_bf4f9.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.14.19+164abd434 for .NET Framework
+        Build started 8/24/2025 8:31:11 PM.
+        
+        Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\cmTC_bf4f9.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_bf4f9.dir\\Debug\\".
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          Creating directory "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\Debug\\".
+          Creating directory "cmTC_bf4f9.dir\\Debug\\cmTC_bf4f9.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_bf4f9.dir\\Debug\\cmTC_bf4f9.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_bf4f9.dir\\Debug\\cmTC_bf4f9.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /std:c++20 /Fo"cmTC_bf4f9.dir\\Debug\\\\" /Fd"cmTC_bf4f9.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\CheckFunctionExists.cxx"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35215 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /std:c++20 /Fo"cmTC_bf4f9.dir\\Debug\\\\" /Fd"cmTC_bf4f9.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\CheckFunctionExists.cxx"
+          CheckFunctionExists.cxx
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\Debug\\cmTC_bf4f9.exe" /INCREMENTAL /ILK:"cmTC_bf4f9.dir\\Debug\\cmTC_bf4f9.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-qib0o0/Debug/cmTC_bf4f9.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-qib0o0/Debug/cmTC_bf4f9.lib" /MACHINE:X64  /machine:x64 cmTC_bf4f9.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: cannot open file 'pthreads.lib' [C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\cmTC_bf4f9.vcxproj]
+        Done Building Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\cmTC_bf4f9.vcxproj" (default targets) -- FAILED.
+        
+        Build FAILED.
+        
+        "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\cmTC_bf4f9.vcxproj" (default target) (1) ->
+        (Link target) -> 
+          LINK : fatal error LNK1104: cannot open file 'pthreads.lib' [C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-qib0o0\\cmTC_bf4f9.vcxproj]
+        
+            0 Warning(s)
+            1 Error(s)
+        
+        Time Elapsed 00:00:01.05
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CheckLibraryExists.cmake:154 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/FindThreads.cmake:112 (check_library_exists)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/FindThreads.cmake:176 (_threads_check_lib)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindDependencyMacro.cmake:78 (find_package)"
+      - "vcpkg/packages/glfw3_x64-windows/share/glfw3/glfw3Config.cmake:2 (find_dependency)"
+      - "CMakeLists.txt:28 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthread"
+    directories:
+      source: "C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-8vm2gb"
+      binary: "C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-8vm2gb"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+      CMAKE_MODULE_PATH: "C:/Users/Marko/arena-engine/vcpkg/packages/catch2_x64-windows/share/catch2"
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREAD_CREATE"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-8vm2gb'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_4260b.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.14.19+164abd434 for .NET Framework
+        Build started 8/24/2025 8:31:12 PM.
+        
+        Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\cmTC_4260b.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_4260b.dir\\Debug\\".
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          Creating directory "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\Debug\\".
+          Creating directory "cmTC_4260b.dir\\Debug\\cmTC_4260b.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_4260b.dir\\Debug\\cmTC_4260b.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_4260b.dir\\Debug\\cmTC_4260b.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /std:c++20 /Fo"cmTC_4260b.dir\\Debug\\\\" /Fd"cmTC_4260b.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\CheckFunctionExists.cxx"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35215 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /std:c++20 /Fo"cmTC_4260b.dir\\Debug\\\\" /Fd"cmTC_4260b.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\CheckFunctionExists.cxx"
+          CheckFunctionExists.cxx
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\Debug\\cmTC_4260b.exe" /INCREMENTAL /ILK:"cmTC_4260b.dir\\Debug\\cmTC_4260b.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-8vm2gb/Debug/cmTC_4260b.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-8vm2gb/Debug/cmTC_4260b.lib" /MACHINE:X64  /machine:x64 cmTC_4260b.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: cannot open file 'pthread.lib' [C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\cmTC_4260b.vcxproj]
+        Done Building Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\cmTC_4260b.vcxproj" (default targets) -- FAILED.
+        
+        Build FAILED.
+        
+        "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\cmTC_4260b.vcxproj" (default target) (1) ->
+        (Link target) -> 
+          LINK : fatal error LNK1104: cannot open file 'pthread.lib' [C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8vm2gb\\cmTC_4260b.vcxproj]
+        
+            0 Warning(s)
+            1 Error(s)
+        
+        Time Elapsed 00:00:01.09
+        
+      exitCode: 1
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "CMakeLists.txt:28 (find_package)"
+    name: "glfw3"
+    configs:
+      -
+        filename: "glfw3Config.cmake"
+        kind: "cmake"
+      -
+        filename: "glfw3-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "required_explicit"
+      quiet: false
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "glfw3"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/glfw3Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/glfw3-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/glfw3Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/glfw3-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/glfw3_x64-windows/glfw3Config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/glfw3_x64-windows/glfw3-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found:
+      path: "C:/Users/Marko/arena-engine/vcpkg/packages/glfw3_x64-windows/share/glfw3/glfw3Config.cmake"
+      mode: "config"
+      version: "3.4.0"
+    search_context:
+      CMAKE_PREFIX_PATH:
+        - "C:/Users/Marko/arena-engine/vcpkg/packages"
+      ENV{PATH}:
+        - "C:\\Java\\jdk-17\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\Common Files\\Autodesk Shared\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\PuTTY\\"
+        - "C:\\Gradle\\gradle-8.6\\bin"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "D:\\Progams\\Git\\cmd"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Users\\Marko\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Program Files\\@boxcli\\bin"
+        - "C:\\Users\\Marko\\.dotnet\\tools"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin"
+        - "C:\\platform-tools"
+        - "C:\\Users\\Marko\\AppData\\Roaming\\npm"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/arena"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/CMake"
+        - "C:/Program Files (x86)/arena"
+      CMAKE_MODULE_PATH:
+        - "C:/Users/Marko/arena-engine/vcpkg/packages/catch2_x64-windows/share/catch2"
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "CMakeLists.txt:32 (find_package)"
+    name: "imgui"
+    configs:
+      -
+        filename: "imguiConfig.cmake"
+        kind: "cmake"
+      -
+        filename: "imgui-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "required_explicit"
+      quiet: false
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "imgui"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/imguiConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/imgui-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/imguiConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/imgui-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/imgui_x64-windows/imguiConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/imgui_x64-windows/imgui-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/imgui_x64-windows/share/imgui/imguiConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found:
+      path: "C:/Users/Marko/arena-engine/vcpkg/packages/imgui_x64-windows/share/imgui/imgui-config.cmake"
+      mode: "config"
+      version: ""
+    search_context:
+      CMAKE_PREFIX_PATH:
+        - "C:/Users/Marko/arena-engine/vcpkg/packages"
+      ENV{PATH}:
+        - "C:\\Java\\jdk-17\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\Common Files\\Autodesk Shared\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\PuTTY\\"
+        - "C:\\Gradle\\gradle-8.6\\bin"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "D:\\Progams\\Git\\cmd"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Users\\Marko\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Program Files\\@boxcli\\bin"
+        - "C:\\Users\\Marko\\.dotnet\\tools"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin"
+        - "C:\\platform-tools"
+        - "C:\\Users\\Marko\\AppData\\Roaming\\npm"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/arena"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/CMake"
+        - "C:/Program Files (x86)/arena"
+...
+
+---
+events:
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "CMakeLists.txt:15 (find_package)"
+    name: "glad"
+    configs:
+      -
+        filename: "gladConfig.cmake"
+        kind: "cmake"
+      -
+        filename: "glad-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "required_explicit"
+      quiet: false
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "glad"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/gladConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/glad-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/gladConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/glad-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/glad_x64-windows/gladConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/glad_x64-windows/glad-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found:
+      path: "C:/Users/Marko/arena-engine/vcpkg/packages/glad_x64-windows/share/glad/gladConfig.cmake"
+      mode: "config"
+      version: "0.1.36"
+    search_context:
+      CMAKE_PREFIX_PATH:
+        - "C:/Users/Marko/arena-engine/vcpkg/packages"
+      ENV{PATH}:
+        - "C:\\Java\\jdk-17\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\Common Files\\Autodesk Shared\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\PuTTY\\"
+        - "C:\\Gradle\\gradle-8.6\\bin"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "D:\\Progams\\Git\\cmd"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Users\\Marko\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Program Files\\@boxcli\\bin"
+        - "C:\\Users\\Marko\\.dotnet\\tools"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin"
+        - "C:\\platform-tools"
+        - "C:\\Users\\Marko\\AppData\\Roaming\\npm"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/arena"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/CMake"
+        - "C:/Program Files (x86)/arena"
+...
+
+---
+events:
+  -
+    kind: "find_package-v1"
+    backtrace:
+      - "CMakeLists.txt:15 (find_package)"
+    name: "angle"
+    configs:
+      -
+        filename: "angleConfig.cmake"
+        kind: "cmake"
+      -
+        filename: "angle-config.cmake"
+        kind: "cmake"
+    version_request:
+      exact: false
+    settings:
+      required: "required_explicit"
+      quiet: false
+      global: false
+      policy_scope: true
+      bypass_provider: false
+      names:
+        - "angle"
+      path_suffixes:
+        - ""
+      paths:
+        CMAKE_FIND_USE_CMAKE_PATH: true
+        CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+        CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+        CMAKE_FIND_USE_INSTALL_PREFIX: true
+        CMAKE_FIND_USE_PACKAGE_ROOT_PATH: true
+        CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY: true
+        CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY: true
+        CMAKE_FIND_ROOT_PATH_MODE: "BOTH"
+    candidates:
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/build/CMakeFiles/pkgRedirects/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/angle_x64-windows/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/angle_x64-windows/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/angle_x64-windows/share/angle/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/arena-engine/vcpkg/packages/angle_x64-windows/share/angle/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Java/jdk-17/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Java/jdk-17/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Oculus/Support/oculus-runtime/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Oculus/Support/oculus-runtime/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/wbem/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/wbem/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/WindowsPowerShell/v1.0/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/WindowsPowerShell/v1.0/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/OpenSSH/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Windows/System32/OpenSSH/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Common Files/Autodesk Shared/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/Common Files/Autodesk Shared/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/GitHub CLI/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/GitHub CLI/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/dotnet/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/dotnet/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/PuTTY/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/PuTTY/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Gradle/gradle-8.6/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Gradle/gradle-8.6/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/nodejs/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/nodejs/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/ProgramData/chocolatey/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/ProgramData/chocolatey/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "D:/Progams/Git/cmd/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "D:/Progams/Git/cmd/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/CMake/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/CMake/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/AppData/Local/Microsoft/WindowsApps/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/AppData/Local/Microsoft/WindowsApps/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/AppData/Local/Programs/Microsoft VS Code/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/AppData/Local/Programs/Microsoft VS Code/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/@boxcli/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/@boxcli/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/AppData/Local/Programs/cursor/resources/app/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Users/Marko/AppData/Local/Programs/cursor/resources/app/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/platform-tools/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/platform-tools/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/CMake/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files/CMake/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/angleConfig.cmake"
+        mode: "config"
+        reason: "no_exist"
+      -
+        path: "C:/Program Files (x86)/angle-config.cmake"
+        mode: "config"
+        reason: "no_exist"
+    found: null
+    search_context:
+      CMAKE_PREFIX_PATH:
+        - "C:/Users/Marko/arena-engine/vcpkg/packages"
+      ENV{PATH}:
+        - "C:\\Java\\jdk-17\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\Common Files\\Autodesk Shared\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\PuTTY\\"
+        - "C:\\Gradle\\gradle-8.6\\bin"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "D:\\Progams\\Git\\cmd"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\"
+        - "C:\\Users\\Marko\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Program Files\\@boxcli\\bin"
+        - "C:\\Users\\Marko\\.dotnet\\tools"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin"
+        - "C:\\platform-tools"
+        - "C:\\Users\\Marko\\AppData\\Roaming\\npm"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/arena"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "C:/Program Files"
+        - "C:/Program Files (x86)"
+        - "C:/Program Files/CMake"
+        - "C:/Program Files (x86)/arena"
+...
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCCompilerId.c.in"
+    candidate_directories:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/"
+    found: "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeCCompilerId.c.in"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Java\\jdk-17\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\Common Files\\Autodesk Shared\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\PuTTY\\"
+        - "C:\\Gradle\\gradle-8.6\\bin"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "D:\\Progams\\Git\\cmd"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\"
+        - "C:\\Users\\Marko\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Program Files\\@boxcli\\bin"
+        - "C:\\Users\\Marko\\.dotnet\\tools"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin"
+        - "C:\\platform-tools"
+        - "C:\\Users\\Marko\\AppData\\Roaming\\npm"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/arena"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCCompiler.cmake:122 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      MSBuild version 17.14.19+164abd434 for .NET Framework
+      Build started 8/25/2025 10:55:43 AM.
+      
+      Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\4.1.0\\CompilerIdC\\CompilerIdC.vcxproj" on node 1 (default targets).
+      PrepareForBuild:
+        Creating directory "Debug\\".
+        Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+        Creating directory "Debug\\CompilerIdC.tlog\\".
+      InitializeBuildStatus:
+        Creating "Debug\\CompilerIdC.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+        Touching "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+        CMakeCCompilerId.c
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
+        CompilerIdC.vcxproj -> C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\4.1.0\\CompilerIdC\\CompilerIdC.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Deleting file "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
+        Touching "Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate".
+      Done Building Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\4.1.0\\CompilerIdC\\CompilerIdC.vcxproj" (default targets).
+      
+      Build succeeded.
+          0 Warning(s)
+          0 Error(s)
+      
+      Time Elapsed 00:00:01.34
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+      
+      The C compiler identification is MSVC, found in:
+        C:/Users/Marko/arena-engine/build/CMakeFiles/4.1.0/CompilerIdC/CompilerIdC.exe
+      
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:37 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:65 (__resolve_tool_path)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:103 (__resolve_linker_path)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "_CMAKE_TOOL_WITH_PATH"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "link"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/"
+      - "C:/Java/jdk-17/bin/"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/Common Files/Autodesk Shared/"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "C:/Program Files/GitHub CLI/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/PuTTY/"
+      - "C:/Gradle/gradle-8.6/bin/"
+      - "C:/Program Files/nodejs/"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/"
+      - "C:/ProgramData/chocolatey/bin/"
+      - "D:/Progams/Git/cmd/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/"
+      - "C:/Users/Marko/AppData/Local/Microsoft/WindowsApps/"
+      - "C:/Users/Marko/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "C:/Program Files/@boxcli/bin/"
+      - "C:/Users/Marko/.dotnet/tools/"
+      - "C:/Users/Marko/AppData/Local/Programs/cursor/resources/app/bin/"
+      - "C:/platform-tools/"
+      - "C:/Users/Marko/AppData/Roaming/npm/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/link.com"
+    found: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/link.exe"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Java\\jdk-17\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\Common Files\\Autodesk Shared\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\PuTTY\\"
+        - "C:\\Gradle\\gradle-8.6\\bin"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "D:\\Progams\\Git\\cmd"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\"
+        - "C:\\Users\\Marko\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Program Files\\@boxcli\\bin"
+        - "C:\\Users\\Marko\\.dotnet\\tools"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin"
+        - "C:\\platform-tools"
+        - "C:\\Users\\Marko\\AppData\\Roaming\\npm"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/arena"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:37 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:65 (__resolve_tool_path)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFindBinUtils.cmake:104 (__resolve_linker_path)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCCompiler.cmake:200 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "_CMAKE_TOOL_WITH_PATH"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "lld-link"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/"
+      - "C:/Java/jdk-17/bin/"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+      - "C:/Windows/System32/wbem/"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/"
+      - "C:/Windows/System32/OpenSSH/"
+      - "C:/Program Files/Common Files/Autodesk Shared/"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/"
+      - "C:/Program Files/GitHub CLI/"
+      - "C:/Program Files/dotnet/"
+      - "C:/Program Files/PuTTY/"
+      - "C:/Gradle/gradle-8.6/bin/"
+      - "C:/Program Files/nodejs/"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/"
+      - "C:/ProgramData/chocolatey/bin/"
+      - "D:/Progams/Git/cmd/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/"
+      - "C:/Users/Marko/AppData/Local/Microsoft/WindowsApps/"
+      - "C:/Users/Marko/AppData/Local/Programs/Microsoft VS Code/bin/"
+      - "C:/Program Files/@boxcli/bin/"
+      - "C:/Users/Marko/.dotnet/tools/"
+      - "C:/Users/Marko/AppData/Local/Programs/cursor/resources/app/bin/"
+      - "C:/platform-tools/"
+      - "C:/Users/Marko/AppData/Roaming/npm/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/lld-link.com"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/lld-link.exe"
+      - "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/lld-link"
+      - "C:/Java/jdk-17/bin/lld-link.com"
+      - "C:/Java/jdk-17/bin/lld-link.exe"
+      - "C:/Java/jdk-17/bin/lld-link"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/lld-link.com"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/lld-link.exe"
+      - "C:/Program Files/Oculus/Support/oculus-runtime/lld-link"
+      - "C:/Windows/System32/lld-link.com"
+      - "C:/Windows/System32/lld-link.exe"
+      - "C:/Windows/System32/lld-link"
+      - "C:/Windows/lld-link.com"
+      - "C:/Windows/lld-link.exe"
+      - "C:/Windows/lld-link"
+      - "C:/Windows/System32/wbem/lld-link.com"
+      - "C:/Windows/System32/wbem/lld-link.exe"
+      - "C:/Windows/System32/wbem/lld-link"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/lld-link.com"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/lld-link.exe"
+      - "C:/Windows/System32/WindowsPowerShell/v1.0/lld-link"
+      - "C:/Windows/System32/OpenSSH/lld-link.com"
+      - "C:/Windows/System32/OpenSSH/lld-link.exe"
+      - "C:/Windows/System32/OpenSSH/lld-link"
+      - "C:/Program Files/Common Files/Autodesk Shared/lld-link.com"
+      - "C:/Program Files/Common Files/Autodesk Shared/lld-link.exe"
+      - "C:/Program Files/Common Files/Autodesk Shared/lld-link"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/lld-link.com"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/lld-link.exe"
+      - "C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common/lld-link"
+      - "C:/Program Files/GitHub CLI/lld-link.com"
+      - "C:/Program Files/GitHub CLI/lld-link.exe"
+      - "C:/Program Files/GitHub CLI/lld-link"
+      - "C:/Program Files/dotnet/lld-link.com"
+      - "C:/Program Files/dotnet/lld-link.exe"
+      - "C:/Program Files/dotnet/lld-link"
+      - "C:/Program Files/PuTTY/lld-link.com"
+      - "C:/Program Files/PuTTY/lld-link.exe"
+      - "C:/Program Files/PuTTY/lld-link"
+      - "C:/Gradle/gradle-8.6/bin/lld-link.com"
+      - "C:/Gradle/gradle-8.6/bin/lld-link.exe"
+      - "C:/Gradle/gradle-8.6/bin/lld-link"
+      - "C:/Program Files/nodejs/lld-link.com"
+      - "C:/Program Files/nodejs/lld-link.exe"
+      - "C:/Program Files/nodejs/lld-link"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/lld-link.com"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/lld-link.exe"
+      - "C:/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR/lld-link"
+      - "C:/ProgramData/chocolatey/bin/lld-link.com"
+      - "C:/ProgramData/chocolatey/bin/lld-link.exe"
+      - "C:/ProgramData/chocolatey/bin/lld-link"
+      - "D:/Progams/Git/cmd/lld-link.com"
+      - "D:/Progams/Git/cmd/lld-link.exe"
+      - "D:/Progams/Git/cmd/lld-link"
+      - "C:/Program Files/CMake/bin/lld-link.com"
+      - "C:/Program Files/CMake/bin/lld-link.exe"
+      - "C:/Program Files/CMake/bin/lld-link"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/lld-link.com"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/lld-link.exe"
+      - "C:/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/lld-link"
+      - "C:/Users/Marko/AppData/Local/Microsoft/WindowsApps/lld-link.com"
+      - "C:/Users/Marko/AppData/Local/Microsoft/WindowsApps/lld-link.exe"
+      - "C:/Users/Marko/AppData/Local/Microsoft/WindowsApps/lld-link"
+      - "C:/Users/Marko/AppData/Local/Programs/Microsoft VS Code/bin/lld-link.com"
+      - "C:/Users/Marko/AppData/Local/Programs/Microsoft VS Code/bin/lld-link.exe"
+      - "C:/Users/Marko/AppData/Local/Programs/Microsoft VS Code/bin/lld-link"
+      - "C:/Program Files/@boxcli/bin/lld-link.com"
+      - "C:/Program Files/@boxcli/bin/lld-link.exe"
+      - "C:/Program Files/@boxcli/bin/lld-link"
+      - "C:/Users/Marko/.dotnet/tools/lld-link.com"
+      - "C:/Users/Marko/.dotnet/tools/lld-link.exe"
+      - "C:/Users/Marko/.dotnet/tools/lld-link"
+      - "C:/Users/Marko/AppData/Local/Programs/cursor/resources/app/bin/lld-link.com"
+      - "C:/Users/Marko/AppData/Local/Programs/cursor/resources/app/bin/lld-link.exe"
+      - "C:/Users/Marko/AppData/Local/Programs/cursor/resources/app/bin/lld-link"
+      - "C:/platform-tools/lld-link.com"
+      - "C:/platform-tools/lld-link.exe"
+      - "C:/platform-tools/lld-link"
+      - "C:/Users/Marko/AppData/Roaming/npm/lld-link.com"
+      - "C:/Users/Marko/AppData/Roaming/npm/lld-link.exe"
+      - "C:/Users/Marko/AppData/Roaming/npm/lld-link"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "C:\\Java\\jdk-17\\bin"
+        - "C:\\Program Files\\Oculus\\Support\\oculus-runtime"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files\\Common Files\\Autodesk Shared\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\PuTTY\\"
+        - "C:\\Gradle\\gradle-8.6\\bin"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR"
+        - "C:\\ProgramData\\chocolatey\\bin"
+        - "D:\\Progams\\Git\\cmd"
+        - "C:\\Program Files\\CMake\\bin"
+        - "C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\"
+        - "C:\\Users\\Marko\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
+        - "C:\\Program Files\\@boxcli\\bin"
+        - "C:\\Users\\Marko\\.dotnet\\tools"
+        - "C:\\Users\\Marko\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin"
+        - "C:\\platform-tools"
+        - "C:\\Users\\Marko\\AppData\\Roaming\\npm"
+      CMAKE_INSTALL_PREFIX: "C:/Program Files (x86)/arena"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-kdnacf"
+      binary: "C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-kdnacf"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-kdnacf'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_70ca7.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.14.19+164abd434 for .NET Framework
+        Build started 8/25/2025 10:55:45 AM.
+        
+        Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-kdnacf\\cmTC_70ca7.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_70ca7.dir\\Debug\\".
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          Creating directory "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-kdnacf\\Debug\\".
+          Creating directory "cmTC_70ca7.dir\\Debug\\cmTC_70ca7.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_70ca7.dir\\Debug\\cmTC_70ca7.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_70ca7.dir\\Debug\\cmTC_70ca7.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_70ca7.dir\\Debug\\\\" /Fd"cmTC_70ca7.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35215 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_70ca7.dir\\Debug\\\\" /Fd"cmTC_70ca7.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
+          CMakeCCompilerABI.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-kdnacf\\Debug\\cmTC_70ca7.exe" /INCREMENTAL /ILK:"cmTC_70ca7.dir\\Debug\\cmTC_70ca7.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-kdnacf/Debug/cmTC_70ca7.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Marko/arena-engine/build/CMakeFiles/CMakeScratch/TryCompile-kdnacf/Debug/cmTC_70ca7.lib" /MACHINE:X64  /machine:x64 cmTC_70ca7.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_70ca7.vcxproj -> C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-kdnacf\\Debug\\cmTC_70ca7.exe
+        FinalizeBuildStatus:
+          Deleting file "cmTC_70ca7.dir\\Debug\\cmTC_70ca7.tlog\\unsuccessfulbuild".
+          Touching "cmTC_70ca7.dir\\Debug\\cmTC_70ca7.tlog\\cmTC_70ca7.lastbuildstate".
+        Done Building Project "C:\\Users\\Marko\\arena-engine\\build\\CMakeFiles\\CMakeScratch\\TryCompile-kdnacf\\cmTC_70ca7.vcxproj" (default targets).
+        
+        Build succeeded.
+            0 Warning(s)
+            0 Error(s)
+        
+        Time Elapsed 00:00:01.38
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'C': C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/Internal/CMakeDetermineLinkerId.cmake:36 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Running the C compiler's linker: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.44.35215.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+...

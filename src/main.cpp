@@ -3,12 +3,18 @@
 #include <thread>
 #include <string>
 #include <vector>
-#include <GLFW/glfw3.h>
 #include "app/Clock.hpp"
 #include "app/Config.hpp"
 #include "arena/input.hpp"
 #include "arena/ecs/registry.hpp"
 #include "arena/ecs/camera_system.hpp"
+#include "arena/text.hpp"
+
+// Define this to include GLFW in the unified OpenGL API header
+#define ARENA_NEED_GLFW
+
+// Unified OpenGL API header
+#include "arena/gl_api.hpp"
 
 // High-resolution timer wrapper using standard C++ chrono
 static double NowSeconds() {
@@ -148,8 +154,40 @@ int main(int argc, char* argv[]) {
         
         // Make context current
         glfwMakeContextCurrent(window);
+        glfwSwapInterval(1);
+        
+        LOG("OpenGL context created successfully");
+        
+        // Initialize GLAD2 after creating the context
+        if (!arena_load_gl()) { 
+            fprintf(stderr, "gladLoadGL failed\n"); 
+            std::abort(); 
+        }
+        
+        // Quick runtime sanity (helps catch accidental mixing)
+        fprintf(stderr, "GL: %s | %s | %s\n",
+          (const char*)glGetString(GL_VENDOR),
+          (const char*)glGetString(GL_RENDERER),
+          (const char*)glGetString(GL_VERSION));
+        
+        if (!glCreateShader || !glBufferData || !glDrawArrays) {
+          fprintf(stderr, "GL function pointers are null (likely wrong GLAD combo)\n");
+          std::abort();
+        }
+        
+        // Check for OpenGL errors
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            LOG("OpenGL error after GLAD2 initialization: " << err);
+        }
         
         LOG("GLFW window initialized successfully");
+        
+        // Initialize text HUD system
+        LOG("About to initialize text HUD system");
+        arena::hud::TextHud_Init();
+        
+        LOG("Text HUD system initialized successfully");
         
         // Create camera entity with Transform and CameraController components
         g_cameraEntityId = g_registry.create();
@@ -176,6 +214,20 @@ int main(int argc, char* argv[]) {
         double now = NowSeconds(); 
         double frame = now - last; 
         last = now;
+        
+        // FPS tracking for HUD
+        static double acc = 0.0;
+        static int frames = 0;
+        static arena::hud::HudStats stats;
+        frames++;
+        acc += frame;
+        if (acc >= 1.0) {
+            stats.fps = frames / acc;
+            stats.ms = stats.fps > 0 ? (1000.0 / stats.fps) : 0.0;
+            stats.ticks = clock.ticks;
+            frames = 0;
+            acc = 0.0;
+        }
         
         // Begin frame for input system
         if (!args.server) {
@@ -293,10 +345,44 @@ int main(int argc, char* argv[]) {
                 LOG("Window close requested, exiting");
                 break;
             }
+            
+            // Clear the screen with a dark blue color
+            glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            // Set up basic OpenGL state for 3D rendering
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LESS);
+            
+            // Set up viewport
+            glViewport(0, 0, config.window_w, config.window_h);
+            
+            // TODO: Add 3D scene rendering here when ready
+            
+            // Set up OpenGL state for 2D overlay rendering
+            glDisable(GL_DEPTH_TEST);  // Disable depth test for 2D overlay
+            glEnable(GL_BLEND);        // Ensure blending is enabled for text
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            
+            // Begin text HUD frame
+            int fbW = 0, fbH = 0;
+            glfwGetFramebufferSize(window, &fbW, &fbH);
+            arena::hud::TextHud_BeginFrame(fbW, fbH);
+            
+            // Draw text HUD overlay
+            arena::hud::TextHud_DrawStats(stats);
+            
+            // Swap buffers
+            glfwSwapBuffers(window);
         }
         
         // Small sleep to prevent 100% CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    
+    // Cleanup text HUD system
+    if (!args.server) {
+        arena::hud::TextHud_Shutdown();
     }
     
     // Cleanup GLFW

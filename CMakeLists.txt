@@ -1,31 +1,39 @@
 cmake_minimum_required(VERSION 3.26)
-project(arena LANGUAGES CXX)
+project(arena LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 # Set vcpkg toolchain directly
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
-# Add vcpkg packages to prefix path
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/packages")
+# GLAD2 (vendored)
+add_library(glad STATIC ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/src/gl.c)
+target_include_directories(glad PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include)
+target_compile_features(glad PUBLIC cxx_std_17)
+set_target_properties(glad PROPERTIES LINKER_LANGUAGE C)
 
-# Find Catch2
+# Find required packages
 find_package(Catch2 CONFIG REQUIRED)
+find_package(glfw3 REQUIRED)
+find_package(OpenGL REQUIRED)
 
-# App (simplified version without GLFW for now)
+# App executable
 add_executable(arena
   src/main.cpp
   src/app/Clock.cpp
   src/app/Config.cpp
-  engine/core/src/input.cpp
+)
+
+# Link libraries
+target_link_libraries(arena PRIVATE 
+  glad
+  glfw 
+  arena_core
+  arena_ecs
+  opengl32
 )
 
 # Set include directories for arena
-target_include_directories(arena PRIVATE engine/core/include engine/ecs/include)
-target_link_libraries(arena PRIVATE arena_ecs)
-
-# Find and link GLFW
-find_package(glfw3 REQUIRED)
-target_link_libraries(arena PRIVATE glfw)
+target_include_directories(arena PRIVATE engine/core/include engine/ecs/include engine/core/include/imgui_bindings vcpkg_installed/x64-windows/include)
 
 # Tests
 add_executable(arena_tests tests/test_clock.cpp src/app/Clock.cpp)
@@ -44,8 +52,12 @@ add_test(NAME ConfigTests COMMAND config_tests)
 add_test(NAME Headless COMMAND it_headless)
 
 # ---- E1 targets (Core, Contracts, ECS) ----
-add_library(arena_core INTERFACE)
-target_include_directories(arena_core INTERFACE engine/core/include)
+add_library(arena_core STATIC
+  engine/core/src/input.cpp
+  engine/core/src/text.cpp
+)
+target_include_directories(arena_core PUBLIC engine/core/include vcpkg_installed/x64-windows/include)
+target_link_libraries(arena_core PUBLIC glad)
 
 add_library(arena_contracts INTERFACE)
 target_include_directories(arena_contracts INTERFACE engine/contracts/include)
@@ -72,8 +84,14 @@ add_test(NAME e1_tests COMMAND e1_tests)
 add_executable(e2_tests
   tests/e2/test_input.cpp
   tests/e2/test_camera.cpp
-  engine/core/src/input.cpp
+  tests/e2/test_hud_smoke.cpp
 )
-target_include_directories(e2_tests PRIVATE engine/core/include engine/ecs/include)
-target_link_libraries(e2_tests PRIVATE arena_core arena_ecs Catch2::Catch2WithMain glfw)
+target_include_directories(e2_tests PRIVATE engine/core/include engine/ecs/include vcpkg_installed/x64-windows/include)
+target_link_libraries(e2_tests PRIVATE arena_core arena_ecs Catch2::Catch2WithMain glad glfw)
 add_test(NAME e2_tests COMMAND e2_tests)
+
+# GLAD2 initialization test
+add_executable(test_glad_init tests/e2/test_glad_init.cpp)
+target_include_directories(test_glad_init PRIVATE engine/core/include)
+target_link_libraries(test_glad_init PRIVATE glad glfw opengl32)
+add_test(NAME glad_init COMMAND test_glad_init)

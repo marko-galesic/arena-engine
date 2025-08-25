@@ -1,13 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\Marko\arena-engine\build\CMakeFiles\f647d8e17a81b3ec3a3edbc9e49b9a07\run_tests.rule">
+    <CustomBuild Include="C:\Users\Marko\arena-engine\build\CMakeFiles\f647d8e17a81b3ec3a3edbc9e49b9a07\RUN_TESTS_force.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
-    <CustomBuild Include="C:\Users\Marko\arena-engine\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="C:\Users\Marko\arena-engine\build\CMakeFiles\run_tests" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">

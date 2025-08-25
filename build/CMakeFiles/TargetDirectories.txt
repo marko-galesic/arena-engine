@@ -1,6 +1,13 @@
+C:/Users/Marko/arena-engine/build/CMakeFiles/glad.dir
 C:/Users/Marko/arena-engine/build/CMakeFiles/arena.dir
 C:/Users/Marko/arena-engine/build/CMakeFiles/arena_tests.dir
 C:/Users/Marko/arena-engine/build/CMakeFiles/config_tests.dir
-C:/Users/Marko/arena-engine/build/CMakeFiles/run_tests.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/it_headless.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/arena_core.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/arena_ecs.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/e1_tests.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/e2_tests.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/test_glad_init.dir
+C:/Users/Marko/arena-engine/build/CMakeFiles/RUN_TESTS.dir
 C:/Users/Marko/arena-engine/build/CMakeFiles/ALL_BUILD.dir
 C:/Users/Marko/arena-engine/build/CMakeFiles/ZERO_CHECK.dir

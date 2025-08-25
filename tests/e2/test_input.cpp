@@ -2,6 +2,11 @@
 #include "arena/input.hpp"
 #include <GLFW/glfw3.h>
 
+// Prevent GLFW from pulling in legacy OpenGL headers
+#ifndef GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_NONE
+#endif
+
 TEST_CASE("InputState initialization", "[input]") {
     arena::InputState state = {};
     

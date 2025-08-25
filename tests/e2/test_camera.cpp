@@ -4,6 +4,11 @@
 #include "arena/input.hpp"
 #include <GLFW/glfw3.h>
 
+// Prevent GLFW from pulling in legacy OpenGL headers
+#ifndef GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_NONE
+#endif
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
