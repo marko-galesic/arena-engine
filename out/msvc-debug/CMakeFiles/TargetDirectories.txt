@@ -1,6 +1,0 @@
-C:/Users/Marko/arena-engine/out/msvc-debug/CMakeFiles/arena.dir
-C:/Users/Marko/arena-engine/out/msvc-debug/CMakeFiles/arena_tests.dir
-C:/Users/Marko/arena-engine/out/msvc-debug/CMakeFiles/config_tests.dir
-C:/Users/Marko/arena-engine/out/msvc-debug/CMakeFiles/run_tests.dir
-C:/Users/Marko/arena-engine/out/msvc-debug/CMakeFiles/ALL_BUILD.dir
-C:/Users/Marko/arena-engine/out/msvc-debug/CMakeFiles/ZERO_CHECK.dir
