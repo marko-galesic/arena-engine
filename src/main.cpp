@@ -3,8 +3,10 @@
 #include <thread>
 #include <string>
 #include <vector>
+#include <GLFW/glfw3.h>
 #include "app/Clock.hpp"
 #include "app/Config.hpp"
+#include "arena/input.hpp"
 
 // High-resolution timer wrapper using standard C++ chrono
 static double NowSeconds() {
@@ -16,6 +18,41 @@ static double NowSeconds() {
 
 // Simple logging macro with timestamps
 #define LOG(msg) std::cout << "[" << NowSeconds() << "] " << msg << std::endl
+
+// Global input state
+static arena::InputState g_inputState;
+
+// Input state accessor
+arena::InputState& getInputState() { return g_inputState; }
+
+// GLFW callback functions
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    arena::handleKey(g_inputState, key, action);
+}
+
+void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+    static double lastX = 0.0, lastY = 0.0;
+    static bool firstMove = true;
+    
+    if (firstMove) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMove = false;
+        return;
+    }
+    
+    double dx = xpos - lastX;
+    double dy = ypos - lastY;
+    
+    arena::handleMouseMove(g_inputState, dx, dy);
+    
+    lastX = xpos;
+    lastY = ypos;
+}
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    arena::handleMouseButton(g_inputState, button, action);
+}
 
 
 
@@ -61,13 +98,8 @@ int main(int argc, char* argv[]) {
     args.parse(argc, argv);
     
     LOG("Starting Arena Engine");
-    if (args.server) {
-        LOG("Running in HEADLESS mode (--server)");
-    } else {
-        LOG("Running in WINDOWED mode");
-    }
     
-    // Load configuration
+    // Load configuration first
     Config config;
     if (config.loadFromFile(args.configPath)) {
         LOG("Loaded config from: " << args.configPath);
@@ -75,6 +107,38 @@ int main(int argc, char* argv[]) {
         LOG("Window size: " << config.window_w << "x" << config.window_h);
     } else {
         LOG("Warning: Could not load config from " << args.configPath << ", using defaults");
+    }
+    
+    GLFWwindow* window = nullptr;
+    
+    if (args.server) {
+        LOG("Running in HEADLESS mode (--server)");
+    } else {
+        LOG("Running in WINDOWED mode");
+        
+        // Initialize GLFW
+        if (!glfwInit()) {
+            LOG("ERROR: Failed to initialize GLFW");
+            return -1;
+        }
+        
+        // Create window
+        window = glfwCreateWindow(config.window_w, config.window_h, "Arena Engine", nullptr, nullptr);
+        if (!window) {
+            LOG("ERROR: Failed to create GLFW window");
+            glfwTerminate();
+            return -1;
+        }
+        
+        // Set input callbacks
+        glfwSetKeyCallback(window, keyCallback);
+        glfwSetCursorPosCallback(window, cursorPosCallback);
+        glfwSetMouseButtonCallback(window, mouseButtonCallback);
+        
+        // Make context current
+        glfwMakeContextCurrent(window);
+        
+        LOG("GLFW window initialized successfully");
     }
     
     // Initialize clock with config
@@ -96,6 +160,11 @@ int main(int argc, char* argv[]) {
         double frame = now - last; 
         last = now;
         
+        // Begin frame for input system
+        if (!args.server) {
+            arena::beginFrame(g_inputState);
+        }
+        
         // Check if we should exit based on --runForMs FIRST (before anything else)
         if (args.runForMs > 0) {
             double elapsedMs = (now - startTime) * 1000.0;
@@ -114,8 +183,24 @@ int main(int argc, char* argv[]) {
             lastLogTime = now;
         }
         
+        // Process GLFW events
+        if (!args.server) {
+            glfwPollEvents();
+            
+            // Check if window should close
+            if (glfwWindowShouldClose(window)) {
+                LOG("Window close requested, exiting");
+                break;
+            }
+        }
+        
         // Small sleep to prevent 100% CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    
+    // Cleanup GLFW
+    if (!args.server) {
+        glfwTerminate();
     }
     
     double totalTime = NowSeconds() - startTime;

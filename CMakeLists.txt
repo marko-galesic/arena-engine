@@ -16,7 +16,15 @@ add_executable(arena
   src/main.cpp
   src/app/Clock.cpp
   src/app/Config.cpp
+  engine/core/src/input.cpp
 )
+
+# Set include directories for arena
+target_include_directories(arena PRIVATE engine/core/include)
+
+# Find and link GLFW
+find_package(glfw3 REQUIRED)
+target_link_libraries(arena PRIVATE glfw)
 
 # Tests
 add_executable(arena_tests tests/test_clock.cpp src/app/Clock.cpp)
@@ -57,3 +65,12 @@ add_executable(e1_tests
 )
 target_link_libraries(e1_tests PRIVATE arena_core arena_contracts arena_ecs Catch2::Catch2WithMain)
 add_test(NAME e1_tests COMMAND e1_tests)
+
+# E2 tests (Input System)
+add_executable(e2_tests
+  tests/e2/test_input.cpp
+  engine/core/src/input.cpp
+)
+target_include_directories(e2_tests PRIVATE engine/core/include)
+target_link_libraries(e2_tests PRIVATE arena_core Catch2::Catch2WithMain glfw)
+add_test(NAME e2_tests COMMAND e2_tests)
