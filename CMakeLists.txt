@@ -57,7 +57,7 @@ add_library(arena_core STATIC
   engine/core/src/text.cpp
 )
 target_include_directories(arena_core PUBLIC engine/core/include vcpkg_installed/x64-windows/include)
-target_link_libraries(arena_core PUBLIC glad)
+target_link_libraries(arena_core PUBLIC glad glfw)
 
 add_library(arena_contracts INTERFACE)
 target_include_directories(arena_contracts INTERFACE engine/contracts/include)
