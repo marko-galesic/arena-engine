@@ -1,237 +1,305 @@
-/* stb_easy_font.h - v0.7 - bitmap font for 3D rendering - public domain
-   by Sean Barrett - http://nothings.org/stb/stb_easy_font.h
-   Creates a texture with ASCII characters, samples it with nearest neighbor.
-   Has a built-in font and can also use .fnt files.
-   
-   DOCUMENTATION
-   
-   int  stb_easy_font_print(float x, float y, char *text, unsigned char color[4], void *vertex_buffer, int vbuf_size);
-   
-   This function renders text to a vertex buffer. It returns the number of vertices
-   generated. The vertex format is:
-   
-      float x, y, z;    // position
-      float s, t;       // texture coordinate
-      unsigned char r,g,b,a; // color
-   
-   You can ignore the z coordinate and s,t coordinates if you don't need them.
-   
-   The color is passed as an array of 4 unsigned chars in r,g,b,a order.
-   
-   To generate a texture from the font, call this function with a large vertex
-   buffer and then create a texture from the generated vertices. The texture
-   should be white-on-transparent, with alpha set to 255. Then you can
-   sample from the texture and multiply by the color you want.
-   
-   The function will generate a quad for each character. The quads are
-   generated in order, so you can render them as a triangle strip.
-   
-   If you pass NULL for the color parameter, it will use white.
-   
-   The function will clip text that goes outside the specified bounds.
-   
-   LIMITATIONS
-   
-   - The font is monospaced
-   - The texture is 8x8 pixels per character
-   - The texture is white-on-transparent
-   - The texture is not antialiased
-   - The texture is not compressed
-   
-   EXAMPLE
-   
-   // Create a texture from the font
-   float vertices[1000];
-   int num_vertices = stb_easy_font_print(0, 0, "Hello, World!", NULL, vertices, 1000);
-   
-   // Create a texture from the vertices
-   // (you'll need to implement this part)
-   
-   // Render the text
-   glEnable(GL_TEXTURE_2D);
-   glBindTexture(GL_TEXTURE_2D, texture);
-   glBegin(GL_QUADS);
-   for (int i = 0; i < num_vertices; i += 4) {
-       glTexCoord2f(vertices[i*5 + 3], vertices[i*5 + 4]);
-       glVertex3f(vertices[i*5 + 0], vertices[i*5 + 1], vertices[i*5 + 2]);
-   }
-   glEnd();
-   
-   LICENSE
-   
-   This software is in the public domain. Where that dedication is not
-   recognized, you are granted a perpetual, irrevocable license to copy,
-   modify, propagate, and distribute this file as you see fit.
-*/
+// stb_easy_font.h - v1.1 - bitmap font for 3D rendering - public domain
+// Sean Barrett, Feb 2015
+//
+//    Easy-to-deploy,
+//    reasonably compact,
+//    extremely inefficient performance-wise,
+//    crappy-looking,
+//    ASCII-only,
+//    bitmap font for use in 3D APIs.
+//
+// Intended for when you just want to get some text displaying
+// in a 3D app as quickly as possible.
+//
+// Doesn't use any textures, instead builds characters out of quads.
+//
+// DOCUMENTATION:
+//
+//   int stb_easy_font_width(char *text)
+//   int stb_easy_font_height(char *text)
+//
+//      Takes a string and returns the horizontal size and the
+//      vertical size (which can vary if 'text' has newlines).
+//
+//   int stb_easy_font_print(float x, float y,
+//                           char *text, unsigned char color[4],
+//                           void *vertex_buffer, int vbuf_size)
+//
+//      Takes a string (which can contain '\n') and fills out a
+//      vertex buffer with renderable data to draw the string.
+//      Output data assumes increasing x is rightwards, increasing y
+//      is downwards.
+//
+//      The vertex data is divided into quads, i.e. there are four
+//      vertices in the vertex buffer for each quad.
+//
+//      The vertices are stored in an interleaved format:
+//
+//         x:float
+//         y:float
+//         z:float
+//         color:uint8[4]
+//
+//      You can ignore z and color if you get them from elsewhere
+//      This format was chosen in the hopes it would make it
+//      easier for you to reuse existing vertex-buffer-drawing code.
+//
+//      If you pass in NULL for color, it becomes 255,255,255,255.
+//
+//      Returns the number of quads.
+//
+//      If the buffer isn't large enough, it will truncate.
+//      Expect it to use an average of ~270 bytes per character.
+//
+//      If your API doesn't draw quads, build a reusable index
+//      list that allows you to render quads as indexed triangles.
+//
+//   void stb_easy_font_spacing(float spacing)
+//
+//      Use positive values to expand the space between characters,
+//      and small negative values (no smaller than -1.5) to contract
+//      the space between characters.
+//
+//      E.g. spacing = 1 adds one "pixel" of spacing between the
+//      characters. spacing = -1 is reasonable but feels a bit too
+//      compact to me; -0.5 is a reasonable compromise as long as
+//      you're scaling the font up.
+//
+// LICENSE
+//
+//   See end of file for license information.
+//
+// VERSION HISTORY
+//
+//   (2020-02-02)  1.1   make everything static so can compile it in more than one src file
+//   (2017-01-15)  1.0   space character takes same space as numbers; fix bad spacing of 'f'
+//   (2016-01-22)  0.7   width() supports multiline text; add height()
+//   (2015-09-13)  0.6   #include <math.h>; updated license
+//   (2015-02-01)  0.5   First release
+//
+// CONTRIBUTORS
+//
+//   github:vassvik    --  bug report
+//   github:podsvirov  --  fix multiple definition errors
 
-#ifndef STB_EASY_FONT_H
-#define STB_EASY_FONT_H
+#if 0
+// SAMPLE CODE:
+//
+//    Here's sample code for old OpenGL; it's a lot more complicated
+//    to make work on modern APIs, and that's your problem.
+//
+void print_string(float x, float y, char *text, float r, float g, float b)
+{
+  static char buffer[99999]; // ~500 chars
+  int num_quads;
 
-#ifdef __cplusplus
-extern "C" {
+  num_quads = stb_easy_font_print(x, y, text, NULL, buffer, sizeof(buffer));
+
+  glColor3f(r,g,b);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glVertexPointer(2, GL_FLOAT, 16, buffer);
+  glDrawArrays(GL_QUADS, 0, num_quads*4);
+  glDisableClientState(GL_VERTEX_ARRAY);
+}
 #endif
+
+#ifndef INCLUDE_STB_EASY_FONT_H
+#define INCLUDE_STB_EASY_FONT_H
+
+#include <stdlib.h>
+#include <math.h>
+
+static struct stb_easy_font_info_struct {
+    unsigned char advance;
+    unsigned char h_seg;
+    unsigned char v_seg;
+} stb_easy_font_charinfo[96] = {
+    {  6,  0,  0 },  {  3,  0,  0 },  {  5,  1,  1 },  {  7,  1,  4 },
+    {  7,  3,  7 },  {  7,  6, 12 },  {  7,  8, 19 },  {  4, 16, 21 },
+    {  4, 17, 22 },  {  4, 19, 23 },  { 23, 21, 24 },  { 23, 22, 31 },
+    { 20, 23, 34 },  { 22, 23, 36 },  { 19, 24, 36 },  { 21, 25, 36 },
+    {  6, 25, 39 },  {  6, 27, 43 },  {  6, 28, 45 },  {  6, 30, 49 },
+    {  6, 33, 53 },  {  6, 34, 57 },  {  6, 40, 58 },  {  6, 46, 59 },
+    {  6, 47, 62 },  {  6, 55, 64 },  { 19, 57, 68 },  { 20, 59, 68 },
+    { 21, 61, 69 },  { 22, 66, 69 },  { 21, 68, 69 },  {  7, 73, 69 },
+    {  9, 75, 74 },  {  6, 78, 81 },  {  6, 80, 85 },  {  6, 83, 90 },
+    {  6, 85, 91 },  {  6, 87, 95 },  {  6, 90, 96 },  {  7, 92, 97 },
+    {  6, 96,102 },  {  5, 97,106 },  {  6, 99,107 },  {  6,100,110 },
+    {  6,100,115 },  {  7,101,116 },  {  6,101,121 },  {  6,101,125 },
+    {  6,102,129 },  {  7,103,133 },  {  6,104,140 },  {  6,105,145 },
+    {  7,107,149 },  {  6,108,151 },  {  7,109,155 },  {  7,109,160 },
+    {  7,109,165 },  {  7,118,167 },  {  6,118,172 },  {  4,120,176 },
+    {  6,122,177 },  {  4,122,181 },  { 23,124,182 },  { 22,129,182 },
+    {  4,130,182 },  { 22,131,183 },  {  6,133,187 },  { 22,135,191 },
+    {  6,137,192 },  { 22,139,196 },  {  6,144,197 },  { 22,147,198 },
+    {  6,150,202 },  { 19,151,206 },  { 21,152,207 },  {  6,155,209 },
+    {  3,160,210 },  { 23,160,211 },  { 22,164,216 },  { 22,165,220 },
+    { 22,167,224 },  { 22,169,228 },  { 21,171,232 },  { 21,173,233 },
+    {  5,178,233 },  { 22,179,234 },  { 23,180,238 },  { 23,180,243 },
+    { 23,180,248 },  { 22,189,248 },  { 22,191,252 },  {  5,196,252 },
+    {  3,203,252 },  {  5,203,253 },  { 22,210,253 },  {  0,214,253 },
+};
+
+static unsigned char stb_easy_font_hseg[214] = {
+   97,37,69,84,28,51,2,18,10,49,98,41,65,25,81,105,33,9,97,1,97,37,37,36,
+    81,10,98,107,3,100,3,99,58,51,4,99,58,8,73,81,10,50,98,8,73,81,4,10,50,
+    98,8,25,33,65,81,10,50,17,65,97,25,33,25,49,9,65,20,68,1,65,25,49,41,
+    11,105,13,101,76,10,50,10,50,98,11,99,10,98,11,50,99,11,50,11,99,8,57,
+    58,3,99,99,107,10,10,11,10,99,11,5,100,41,65,57,41,65,9,17,81,97,3,107,
+    9,97,1,97,33,25,9,25,41,100,41,26,82,42,98,27,83,42,98,26,51,82,8,41,
+    35,8,10,26,82,114,42,1,114,8,9,73,57,81,41,97,18,8,8,25,26,26,82,26,82,
+    26,82,41,25,33,82,26,49,73,35,90,17,81,41,65,57,41,65,25,81,90,114,20,
+    84,73,57,41,49,25,33,65,81,9,97,1,97,25,33,65,81,57,33,25,41,25,
+};
+
+static unsigned char stb_easy_font_vseg[253] = {
+   4,2,8,10,15,8,15,33,8,15,8,73,82,73,57,41,82,10,82,18,66,10,21,29,1,65,
+    27,8,27,9,65,8,10,50,97,74,66,42,10,21,57,41,29,25,14,81,73,57,26,8,8,
+    26,66,3,8,8,15,19,21,90,58,26,18,66,18,105,89,28,74,17,8,73,57,26,21,
+    8,42,41,42,8,28,22,8,8,30,7,8,8,26,66,21,7,8,8,29,7,7,21,8,8,8,59,7,8,
+    8,15,29,8,8,14,7,57,43,10,82,7,7,25,42,25,15,7,25,41,15,21,105,105,29,
+    7,57,57,26,21,105,73,97,89,28,97,7,57,58,26,82,18,57,57,74,8,30,6,8,8,
+    14,3,58,90,58,11,7,74,43,74,15,2,82,2,42,75,42,10,67,57,41,10,7,2,42,
+    74,106,15,2,35,8,8,29,7,8,8,59,35,51,8,8,15,35,30,35,8,8,30,7,8,8,60,
+    36,8,45,7,7,36,8,43,8,44,21,8,8,44,35,8,8,43,23,8,8,43,35,8,8,31,21,15,
+    20,8,8,28,18,58,89,58,26,21,89,73,89,29,20,8,8,30,7,
+};
 
 typedef struct
 {
-   unsigned char c0,c1; // start/end characters
-   unsigned char w;      // width
-   unsigned char h;      // height
-   unsigned char data[8]; // font data
-} stb_easy_font_char;
+   unsigned char c[4];
+} stb_easy_font_color;
 
-extern stb_easy_font_char stb_easy_font_charinfo[95];
-
-int stb_easy_font_print(float x, float y, char *text, unsigned char color[4], void *vertex_buffer, int vbuf_size);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
-
-#ifdef STB_EASY_FONT_IMPLEMENTATION
-
-stb_easy_font_char stb_easy_font_charinfo[95] = {
-   {32,126,8,8,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}},   // space
-   {33,33,8,8,{0x18,0x18,0x18,0x18,0x18,0x00,0x18,0x18}},   // !
-   {34,34,8,8,{0x6C,0x6C,0x6C,0x00,0x00,0x00,0x00,0x00}},   // "
-   {35,35,8,8,{0x6C,0x6C,0xFE,0x6C,0xFE,0x6C,0x6C,0x00}},   // #
-   {36,36,8,8,{0x18,0x18,0x7C,0xC0,0x78,0x0C,0xF8,0x18}},   // $
-   {37,37,8,8,{0x00,0x00,0xC6,0xCC,0x18,0x30,0x66,0xC6}},   // %
-   {38,38,8,8,{0x38,0x6C,0x38,0x60,0xC6,0xC6,0x7C,0x00}},   // &
-   {39,39,8,8,{0x18,0x18,0x30,0x00,0x00,0x00,0x00,0x00}},   // '
-   {40,40,8,8,{0x0C,0x18,0x30,0x30,0x30,0x18,0x0C,0x00}},   // (
-   {41,41,8,8,{0x30,0x18,0x0C,0x0C,0x0C,0x18,0x30,0x00}},   // )
-   {42,42,8,8,{0x00,0x00,0x18,0x18,0x7E,0x18,0x18,0x00}},   // *
-   {43,43,8,8,{0x00,0x00,0x18,0x18,0x7E,0x18,0x18,0x00}},   // +
-   {44,44,8,8,{0x00,0x00,0x00,0x00,0x18,0x18,0x30,0x00}},   // ,
-   {45,45,8,8,{0x00,0x00,0x00,0x00,0x7E,0x00,0x00,0x00}},   // -
-   {46,46,8,8,{0x00,0x00,0x00,0x00,0x00,0x18,0x18,0x00}},   // .
-   {47,47,8,8,{0x00,0x00,0x06,0x0C,0x18,0x30,0x60,0x00}},   // /
-   {48,48,8,8,{0x7C,0xC6,0xC6,0xD6,0xD6,0xC6,0x7C,0x00}},   // 0
-   {49,49,8,8,{0x18,0x38,0x78,0x18,0x18,0x18,0x7E,0x00}},   // 1
-   {50,50,8,8,{0x7C,0xC6,0x06,0x0C,0x18,0x30,0xFE,0x00}},   // 2
-   {51,51,8,8,{0x7C,0xC6,0x06,0x3C,0x06,0xC6,0x7C,0x00}},   // 3
-   {52,52,8,8,{0x0C,0x1C,0x3C,0x6C,0xFE,0x0C,0x0C,0x00}},   // 4
-   {53,53,8,8,{0xFE,0xC0,0xC0,0xFC,0x06,0xC6,0x7C,0x00}},   // 5
-   {54,54,8,8,{0x7C,0xC6,0xC0,0xFC,0xC6,0xC6,0x7C,0x00}},   // 6
-   {55,55,8,8,{0xFE,0x06,0x0C,0x18,0x30,0x30,0x30,0x00}},   // 7
-   {56,56,8,8,{0x7C,0xC6,0xC6,0x7C,0xC6,0xC6,0x7C,0x00}},   // 8
-   {57,57,8,8,{0x7C,0xC6,0xC6,0x7E,0x06,0xC6,0x7C,0x00}},   // 9
-   {58,58,8,8,{0x00,0x00,0x18,0x18,0x00,0x18,0x18,0x00}},   // :
-   {59,59,8,8,{0x00,0x00,0x18,0x18,0x00,0x18,0x18,0x30}},   // ;
-   {60,60,8,8,{0x00,0x00,0x0C,0x18,0x30,0x18,0x0C,0x00}},   // <
-   {61,61,8,8,{0x00,0x00,0x00,0x7E,0x00,0x7E,0x00,0x00}},   // =
-   {62,62,8,8,{0x00,0x00,0x30,0x18,0x0C,0x18,0x30,0x00}},   // >
-   {63,63,8,8,{0x7C,0xC6,0x0C,0x18,0x18,0x00,0x18,0x18}},   // ?
-   {64,64,8,8,{0x7C,0xC6,0xC6,0xDE,0xDE,0xC0,0x7C,0x00}},   // @
-   {65,65,8,8,{0x7C,0xC6,0xC6,0xFE,0xC6,0xC6,0xC6,0x00}},   // A
-   {66,66,8,8,{0xFC,0xC6,0xC6,0xFC,0xC6,0xC6,0xFC,0x00}},   // B
-   {67,67,8,8,{0x7C,0xC6,0xC0,0xC0,0xC0,0xC6,0x7C,0x00}},   // C
-   {68,68,8,8,{0xFC,0xC6,0xC6,0xC6,0xC6,0xC6,0xFC,0x00}},   // D
-   {69,69,8,8,{0xFE,0xC0,0xC0,0xFC,0xC0,0xC0,0xFE,0x00}},   // E
-   {70,70,8,8,{0xFE,0xC0,0xC0,0xFC,0xC0,0xC0,0xC0,0x00}},   // F
-   {71,71,8,8,{0x7C,0xC6,0xC0,0xDE,0xC6,0xC6,0x7C,0x00}},   // G
-   {72,72,8,8,{0xC6,0xC6,0xC6,0xFE,0xC6,0xC6,0xC6,0x00}},   // H
-   {73,73,8,8,{0x7E,0x18,0x18,0x18,0x18,0x18,0x7E,0x00}},   // I
-   {74,74,8,8,{0x06,0x06,0x06,0x06,0xC6,0xC6,0x7C,0x00}},   // J
-   {75,75,8,8,{0xC6,0xCC,0xD8,0xF0,0xD8,0xCC,0xC6,0x00}},   // K
-   {76,76,8,8,{0xC0,0xC0,0xC0,0xC0,0xC0,0xC0,0xFE,0x00}},   // L
-   {77,77,8,8,{0xC6,0xEE,0xFE,0xD6,0xC6,0xC6,0xC6,0x00}},   // M
-   {78,78,8,8,{0xC6,0xE6,0xF6,0xDE,0xCE,0xC6,0xC6,0x00}},   // N
-   {79,79,8,8,{0x7C,0xC6,0xC6,0xC6,0xC6,0xC6,0x7C,0x00}},   // O
-   {80,80,8,8,{0xFC,0xC6,0xC6,0xFC,0xC0,0xC0,0xC0,0x00}},   // P
-   {81,81,8,8,{0x7C,0xC6,0xC6,0xC6,0xC6,0xC6,0x7C,0x06}},   // Q
-   {82,82,8,8,{0xFC,0xC6,0xC6,0xFC,0xC6,0xC6,0xC6,0x00}},   // R
-   {83,83,8,8,{0x7C,0xC6,0xC0,0x7C,0x06,0xC6,0x7C,0x00}},   // S
-   {84,84,8,8,{0x7E,0x18,0x18,0x18,0x18,0x18,0x18,0x00}},   // T
-   {85,85,8,8,{0xC6,0xC6,0xC6,0xC6,0xC6,0xC6,0x7C,0x00}},   // U
-   {86,86,8,8,{0xC6,0xC6,0xC6,0xC6,0xC6,0x6C,0x38,0x00}},   // V
-   {87,87,8,8,{0xC6,0xC6,0xC6,0xD6,0xFE,0xEE,0xC6,0x00}},   // W
-   {88,88,8,8,{0xC6,0xC6,0x6C,0x38,0x6C,0xC6,0xC6,0x00}},   // X
-   {89,89,8,8,{0xC6,0xC6,0xC6,0x7C,0x18,0x18,0x18,0x00}},   // Y
-   {90,90,8,8,{0xFE,0x06,0x0C,0x18,0x30,0x60,0xFE,0x00}},   // Z
-   {91,91,8,8,{0x7C,0x60,0x60,0x60,0x60,0x60,0x7C,0x00}},   // [
-   {92,92,8,8,{0x00,0x00,0x60,0x30,0x18,0x0C,0x06,0x00}},   // \
-   {93,93,8,8,{0x7C,0x0C,0x0C,0x0C,0x0C,0x0C,0x7C,0x00}},   // ]
-   {94,94,8,8,{0x18,0x3C,0x66,0x00,0x00,0x00,0x00,0x00}},   // ^
-   {95,95,8,8,{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF}},   // _
-   {96,96,8,8,{0x30,0x18,0x0C,0x00,0x00,0x00,0x00,0x00}},   // `
-   {97,97,8,8,{0x00,0x00,0x7C,0x06,0x7E,0xC6,0x7E,0x00}},   // a
-   {98,98,8,8,{0xC0,0xC0,0xFC,0xC6,0xC6,0xC6,0xFC,0x00}},   // b
-   {99,99,8,8,{0x00,0x00,0x7C,0xC6,0xC0,0xC6,0x7C,0x00}},   // c
-   {100,100,8,8,{0x06,0x06,0x7E,0xC6,0xC6,0xC6,0x7E,0x00}},   // d
-   {101,101,8,8,{0x00,0x00,0x7C,0xC6,0xFE,0xC0,0x7C,0x00}},   // e
-   {102,102,8,8,{0x3C,0x66,0x60,0xF8,0x60,0x60,0x60,0x00}},   // f
-   {103,103,8,8,{0x00,0x00,0x7E,0xC6,0xC6,0x7E,0x06,0x7C}},   // g
-   {104,104,8,8,{0xC0,0xC0,0xFC,0xC6,0xC6,0xC6,0xC6,0x00}},   // h
-   {105,105,8,8,{0x18,0x00,0x38,0x18,0x18,0x18,0x3C,0x00}},   // i
-   {106,106,8,8,{0x0C,0x00,0x1C,0x0C,0x0C,0x0C,0xCC,0x78}},   // j
-   {107,107,8,8,{0xC0,0xC0,0xCC,0xD8,0xF0,0xD8,0xCC,0x00}},   // k
-   {108,108,8,8,{0x38,0x18,0x18,0x18,0x18,0x18,0x3C,0x00}},   // l
-   {109,109,8,8,{0x00,0x00,0xEC,0xFE,0xD6,0xD6,0xD6,0x00}},   // m
-   {110,110,8,8,{0x00,0x00,0xFC,0xC6,0xC6,0xC6,0xC6,0x00}},   // n
-   {111,111,8,8,{0x00,0x00,0x7C,0xC6,0xC6,0xC6,0x7C,0x00}},   // o
-   {112,112,8,8,{0x00,0x00,0xFC,0xC6,0xC6,0xFC,0xC0,0xC0}},   // p
-   {113,113,8,8,{0x00,0x00,0x7E,0xC6,0xC6,0x7E,0x06,0x06}},   // q
-   {114,114,8,8,{0x00,0x00,0xFC,0xC6,0xC0,0xC0,0xC0,0x00}},   // r
-   {115,115,8,8,{0x00,0x00,0x7E,0xC0,0x7C,0x06,0xFC,0x00}},   // s
-   {116,116,8,8,{0x60,0x60,0xF8,0x60,0x60,0x66,0x3C,0x00}},   // t
-   {117,117,8,8,{0x00,0x00,0xC6,0xC6,0xC6,0xC6,0x7E,0x00}},   // u
-   {118,118,8,8,{0x00,0x00,0xC6,0xC6,0xC6,0x6C,0x38,0x00}},   // v
-   {119,119,8,8,{0x00,0x00,0xD6,0xD6,0xD6,0xFE,0x6C,0x00}},   // w
-   {120,120,8,8,{0x00,0x00,0xC6,0x6C,0x38,0x6C,0xC6,0x00}},   // x
-   {121,121,8,8,{0x00,0x00,0xC6,0xC6,0xC6,0x7E,0x06,0x7C}},   // y
-   {122,122,8,8,{0x00,0x00,0xFE,0x0C,0x18,0x30,0xFE,0x00}},   // z
-   {123,123,8,8,{0x1C,0x30,0x30,0x60,0x30,0x30,0x1C,0x00}},   // {
-   {124,124,8,8,{0x18,0x18,0x18,0x18,0x18,0x18,0x18,0x00}},   // |
-   {125,125,8,8,{0x70,0x18,0x18,0x0C,0x18,0x18,0x70,0x00}},   // }
-   {126,126,8,8,{0x76,0xDC,0x00,0x00,0x00,0x00,0x00,0x00}},   // ~
-};
-
-int stb_easy_font_print(float x, float y, char *text, unsigned char color[4], void *vertex_buffer, int vbuf_size)
+static int stb_easy_font_draw_segs(float x, float y, unsigned char *segs, int num_segs, int vertical, stb_easy_font_color c, char *vbuf, int vbuf_size, int offset)
 {
-   float start_x = x;
-   float start_y = y;
-   int v = 0;
-   int max_v = vbuf_size / (sizeof(float) * 5 + sizeof(unsigned char) * 4);
-   
-   if (!color) color = (unsigned char *)"\xff\xff\xff\xff";
-   
-   while (*text && v < max_v) {
-      if (*text >= 32 && *text < 127) {
-         stb_easy_font_char *info = &stb_easy_font_charinfo[*text - 32];
-         float x0 = x + info->c0;
-         float y0 = y + info->c1;
-         float x1 = x + info->c0 + info->w;
-         float y1 = y + info->c1 + info->h;
-         
-         float *vb = (float *)vertex_buffer + v * 9;
-         vb[0] = x0; vb[1] = y0; vb[2] = 0;
-         vb[3] = 0; vb[4] = 0;
-         vb[5] = color[0]/255.0f; vb[6] = color[1]/255.0f; vb[7] = color[2]/255.0f; vb[8] = color[3]/255.0f;
-         
-         vb[9] = x1; vb[10] = y0; vb[11] = 0;
-         vb[12] = 1; vb[13] = 0;
-         vb[14] = color[0]/255.0f; vb[15] = color[1]/255.0f; vb[16] = color[2]/255.0f; vb[17] = color[3]/255.0f;
-         
-         vb[18] = x1; vb[19] = y1; vb[20] = 0;
-         vb[21] = 1; vb[22] = 1;
-         vb[23] = color[0]/255.0f; vb[24] = color[1]/255.0f; vb[25] = color[2]/255.0f; vb[26] = color[3]/255.0f;
-         
-         vb[27] = x0; vb[28] = y1; vb[29] = 0;
-         vb[30] = 0; vb[31] = 1;
-         vb[32] = color[0]/255.0f; vb[33] = color[1]/255.0f; vb[34] = color[2]/255.0f; vb[35] = color[3]/255.0f;
-         
-         v += 4;
-         x += info->w;
-      } else if (*text == '\n') {
-         x = start_x;
-         y += 12;
-      }
-      ++text;
-   }
-   return v;
+    int i,j;
+    for (i=0; i < num_segs; ++i) {
+        int len = segs[i] & 7;
+        x += (float) ((segs[i] >> 3) & 1);
+        if (len && offset+64 <= vbuf_size) {
+            float y0 = y + (float) (segs[i]>>4);
+            for (j=0; j < 4; ++j) {
+                * (float *) (vbuf+offset+0) = x  + (j==1 || j==2 ? (vertical ? 1 : len) : 0);
+                * (float *) (vbuf+offset+4) = y0 + (    j >= 2   ? (vertical ? len : 1) : 0);
+                * (float *) (vbuf+offset+8) = 0.f;
+                * (stb_easy_font_color *) (vbuf+offset+12) = c;
+                offset += 16;
+            }
+        }
+    }
+    return offset;
 }
 
+static float stb_easy_font_spacing_val = 0;
+static void stb_easy_font_spacing(float spacing)
+{
+   stb_easy_font_spacing_val = spacing;
+}
+
+static int stb_easy_font_print(float x, float y, char *text, unsigned char color[4], void *vertex_buffer, int vbuf_size)
+{
+    char *vbuf = (char *) vertex_buffer;
+    float start_x = x;
+    int offset = 0;
+
+    stb_easy_font_color c = { 255,255,255,255 }; // use structure copying to avoid needing depending on memcpy()
+    if (color) { c.c[0] = color[0]; c.c[1] = color[1]; c.c[2] = color[2]; c.c[3] = color[3]; }
+
+    while (*text && offset < vbuf_size) {
+        if (*text == '\n') {
+            y += 12;
+            x = start_x;
+        } else {
+            unsigned char advance = stb_easy_font_charinfo[*text-32].advance;
+            float y_ch = advance & 16 ? y+1 : y;
+            int h_seg, v_seg, num_h, num_v;
+            h_seg = stb_easy_font_charinfo[*text-32  ].h_seg;
+            v_seg = stb_easy_font_charinfo[*text-32  ].v_seg;
+            num_h = stb_easy_font_charinfo[*text-32+1].h_seg - h_seg;
+            num_v = stb_easy_font_charinfo[*text-32+1].v_seg - v_seg;
+            offset = stb_easy_font_draw_segs(x, y_ch, &stb_easy_font_hseg[h_seg], num_h, 0, c, vbuf, vbuf_size, offset);
+            offset = stb_easy_font_draw_segs(x, y_ch, &stb_easy_font_vseg[v_seg], num_v, 1, c, vbuf, vbuf_size, offset);
+            x += advance & 15;
+            x += stb_easy_font_spacing_val;
+        }
+        ++text;
+    }
+    return (unsigned) offset/64;
+}
+
+static int stb_easy_font_width(char *text)
+{
+    float len = 0;
+    float max_len = 0;
+    while (*text) {
+        if (*text == '\n') {
+            if (len > max_len) max_len = len;
+            len = 0;
+        } else {
+            len += stb_easy_font_charinfo[*text-32].advance & 15;
+            len += stb_easy_font_spacing_val;
+        }
+        ++text;
+    }
+    if (len > max_len) max_len = len;
+    return (int) ceil(max_len);
+}
+
+static int stb_easy_font_height(char *text)
+{
+    float y = 0;
+    int nonempty_line=0;
+    while (*text) {
+        if (*text == '\n') {
+            y += 12;
+            nonempty_line = 0;
+        } else {
+            nonempty_line = 1;
+        }
+        ++text;
+    }
+    return (int) ceil(y + (nonempty_line ? 12 : 0));
+}
 #endif
+
+/*
+------------------------------------------------------------------------------
+This software is available under 2 licenses -- choose whichever you prefer.
+------------------------------------------------------------------------------
+ALTERNATIVE A - MIT License
+Copyright (c) 2017 Sean Barrett
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+------------------------------------------------------------------------------
+ALTERNATIVE B - Public Domain (www.unlicense.org)
+This is free and unencumbered software released into the public domain.
+Anyone is free to copy, modify, publish, use, compile, sell, or distribute this
+software, either in source code form or as a compiled binary, for any purpose,
+commercial or non-commercial, and by any means.
+In jurisdictions that recognize copyright laws, the author or authors of this
+software dedicate any and all copyright interest in the software to the public
+domain. We make this dedication for the benefit of the public at large and to
+the detriment of our heirs and successors. We intend this dedication to be an
+overt act of relinquishment in perpetuity of all present and future rights to
+this software under copyright law.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+------------------------------------------------------------------------------
+*/

@@ -19,7 +19,12 @@ static GLuint compile(GLenum type, const char* src) {
   glShaderSource(s, 1, &src, nullptr);
   glCompileShader(s);
   GLint ok=0; glGetShaderiv(s, GL_COMPILE_STATUS, &ok);
-  if(!ok){ char log[2048]; glGetShaderInfoLog(s, 2048, nullptr, log); assert(false && "shader compile failed"); }
+  if(!ok){ 
+    char log[2048]; 
+    glGetShaderInfoLog(s, 2048, nullptr, log); 
+    printf("Shader compile failed: %s\n", log);
+    assert(false && "shader compile failed"); 
+  }
   return s;
 }
 static GLuint link(GLuint vs, GLuint fs){
@@ -27,7 +32,12 @@ static GLuint link(GLuint vs, GLuint fs){
   glAttachShader(p,vs); glAttachShader(p,fs);
   glLinkProgram(p);
   GLint ok=0; glGetProgramiv(p, GL_LINK_STATUS, &ok);
-  if(!ok){ char log[2048]; glGetProgramInfoLog(p, 2048, nullptr, log); assert(false && "program link failed"); }
+  if(!ok){ 
+    char log[2048]; 
+    glGetProgramInfoLog(p, 2048, nullptr, log); 
+    printf("Program link failed: %s\n", log);
+    assert(false && "program link failed"); 
+  }
   glDetachShader(p,vs); glDetachShader(p,fs);
   glDeleteShader(vs); glDeleteShader(fs);
   return p;
@@ -37,8 +47,9 @@ void TextHud_Init() {
   printf("TextHud_Init: Starting initialization\n");
   
   // Load shader sources from disk here if you prefer; embedding for brevity:
+  // Using version 330 for better compatibility
   const char* vsrc =
-R"(#version 450 core
+R"(#version 330 core
 layout(location=0) in vec2 aPosPx;         // pixel space (origin at top-left input)
 uniform vec2 uScreen;                      // framebuffer size in pixels
 void main(){
@@ -50,7 +61,7 @@ void main(){
 })";
 
   const char* fsrc =
-R"(#version 450 core
+R"(#version 330 core
 out vec4 FragColor;
 uniform vec4 uColor;
 void main(){ FragColor = uColor; })";
@@ -69,14 +80,16 @@ void main(){ FragColor = uColor; })";
   printf("TextHud_Init: Creating VAO and VBO\n");
   glCreateVertexArrays(1, &g_vao);
   glCreateBuffers(1, &g_vbo);
-  glVertexArrayVertexBuffer(g_vao, 0, g_vbo, 0, sizeof(float)*2);
-  glEnableVertexArrayAttrib(g_vao, 0);
-  glVertexArrayAttribFormat(g_vao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-  glVertexArrayAttribBinding(g_vao, 0, 0);
-
+  
+  // Set up vertex buffer
   glBindBuffer(GL_ARRAY_BUFFER, g_vbo);
-  // reserve a modest buffer; grows if needed
   glBufferData(GL_ARRAY_BUFFER, 64 * 1024, nullptr, GL_STREAM_DRAW);
+  
+  // Set up vertex array object
+  glBindVertexArray(g_vao);
+  glBindBuffer(GL_ARRAY_BUFFER, g_vbo);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 
   // enable alpha blending once (text is solid quads but allow alpha)
   glEnable(GL_BLEND);
@@ -98,48 +111,57 @@ void TextHud_BeginFrame(int fbWidth, int fbHeight) {
   glUniform2f(g_uScreen, (float)g_fbW, (float)g_fbH);
 }
 
-void TextHud_DrawLine(float x, float y, const char* text, float r, float g, float b, float a) {
-  // Build quads from stb_easy_font. It writes XY as floats with 16-byte stride per vertex (x,y,z,w unused)
-  // We only use the first 2 floats of each vertex.
-  char quadBuf[100000]; // supports ~2500 chars; expand if needed
-  int numQuads = stb_easy_font_print(x, y, (char*)text, nullptr, quadBuf, sizeof(quadBuf));
-  if (numQuads <= 0) return;
+void TextHud_DrawLine(float x, float y, const char* text,
+                      float r, float g, float b, float a)
+{
+    // Stock stb: returns number of QUADS; vertices are (x,y,rgba8), 16-byte stride
+    static unsigned char quadBuf[200000]; // ~5000 quads; enlarge if needed
+    const int numQuads = stb_easy_font_print(x, y, (char*)text, nullptr,
+                                             quadBuf, sizeof(quadBuf));
+    if (numQuads <= 0) return;
 
-  glUseProgram(g_prog);
-  glUniform4f(g_uColor, r, g, b, a);
-  glBindVertexArray(g_vao);
-  glBindBuffer(GL_ARRAY_BUFFER, g_vbo);
 
-  // Convert quads to triangles for modern OpenGL compatibility
-  // Each quad becomes 2 triangles: (0,1,2) and (2,3,0)
-  std::vector<float> triangleVerts;
-  triangleVerts.reserve(numQuads * 6 * 2); // 6 vertices per quad, 2 floats per vertex
-  
-  const float* src = reinterpret_cast<const float*>(quadBuf);
-  for (int i = 0; i < numQuads; ++i) {
-    // First triangle: (0,1,2)
-    triangleVerts.push_back(src[i*16 + 0]); triangleVerts.push_back(src[i*16 + 1]); // vertex 0
-    triangleVerts.push_back(src[i*16 + 4]); triangleVerts.push_back(src[i*16 + 5]); // vertex 1
-    triangleVerts.push_back(src[i*16 + 8]); triangleVerts.push_back(src[i*16 + 9]); // vertex 2
-    
-    // Second triangle: (2,3,0)
-    triangleVerts.push_back(src[i*16 + 8]); triangleVerts.push_back(src[i*16 + 9]); // vertex 2
-    triangleVerts.push_back(src[i*16 + 12]); triangleVerts.push_back(src[i*16 + 13]); // vertex 3
-    triangleVerts.push_back(src[i*16 + 0]); triangleVerts.push_back(src[i*16 + 1]); // vertex 0
-  }
-  
-  // Upload triangle data
-  const GLsizeiptr triangleBytes = (GLsizeiptr)(triangleVerts.size() * sizeof(float));
-  GLint64 current = 0; 
-  glGetBufferParameteri64v(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &current);
-  if (triangleBytes > current) {
-    glBufferData(GL_ARRAY_BUFFER, triangleBytes, nullptr, GL_STREAM_DRAW);
-  }
-  glBufferSubData(GL_ARRAY_BUFFER, 0, triangleBytes, triangleVerts.data());
-  
-  // Draw triangles
-  glDrawArrays(GL_TRIANGLES, 0, triangleVerts.size() / 2);
+
+    glUseProgram(g_prog);
+    glUniform4f(g_uColor, r, g, b, a);
+    glBindVertexArray(g_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, g_vbo);
+
+    std::vector<float> verts;
+    verts.reserve(numQuads * 6 * 2); // 2 tris/quad * 3 verts/tri * 2 floats
+
+    constexpr int STRIDE = 16; // bytes/vertex in stock stb_easy_font
+    auto pos = [&](int i) -> const float* {
+        return reinterpret_cast<const float*>(quadBuf + i * STRIDE);
+    };
+
+    for (int q = 0; q < numQuads; ++q) {
+        const int base = q * 4; // 4 verts per quad
+        const float* p0 = pos(base + 0);
+        const float* p1 = pos(base + 1);
+        const float* p2 = pos(base + 2);
+        const float* p3 = pos(base + 3);
+
+        // tri 1: 0,1,2
+        verts.push_back(p0[0]); verts.push_back(p0[1]);
+        verts.push_back(p1[0]); verts.push_back(p1[1]);
+        verts.push_back(p2[0]); verts.push_back(p2[1]);
+        // tri 2: 0,2,3
+        verts.push_back(p0[0]); verts.push_back(p0[1]);
+        verts.push_back(p2[0]); verts.push_back(p2[1]);
+        verts.push_back(p3[0]); verts.push_back(p3[1]);
+    }
+
+    const GLsizeiptr bytes = (GLsizeiptr)(verts.size() * sizeof(float));
+    GLint64 current = 0;
+    glGetBufferParameteri64v(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &current);
+    if (bytes > current) glBufferData(GL_ARRAY_BUFFER, bytes, nullptr, GL_STREAM_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, bytes, verts.data());
+
+    // VAO is already: location 0 -> vec2, tightly packed (2*sizeof(float))
+    glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(verts.size() / 2));
 }
+
 
 void TextHud_DrawStats(const HudStats& s) {
   printf("TextHud_DrawStats: Drawing stats - FPS: %.1f, ms: %.2f, ticks: %llu\n", s.fps, s.ms, (unsigned long long)s.ticks);
