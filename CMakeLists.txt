@@ -29,11 +29,12 @@ target_link_libraries(arena PRIVATE
   glfw 
   arena_core
   arena_ecs
+  arena_gfx
   opengl32
 )
 
 # Set include directories for arena
-target_include_directories(arena PRIVATE engine/core/include engine/ecs/include engine/core/include/imgui_bindings vcpkg_installed/x64-windows/include)
+target_include_directories(arena PRIVATE engine/core/include engine/ecs/include engine/gfx/include engine/core/include/imgui_bindings vcpkg_installed/x64-windows/include)
 
 # Tests
 add_executable(arena_tests tests/test_clock.cpp src/app/Clock.cpp)
@@ -59,6 +60,14 @@ add_library(arena_core STATIC
 target_include_directories(arena_core PUBLIC engine/core/include vcpkg_installed/x64-windows/include)
 target_link_libraries(arena_core PUBLIC glad glfw)
 
+# ---- E3 targets (Graphics) ----
+add_library(arena_gfx STATIC
+  engine/gfx/src/gl_context.cpp
+  engine/gfx/src/shader.cpp
+)
+target_include_directories(arena_gfx PUBLIC engine/gfx/include engine/core/include vcpkg_installed/x64-windows/include)
+target_link_libraries(arena_gfx PUBLIC glad glfw opengl32)
+
 add_library(arena_contracts INTERFACE)
 target_include_directories(arena_contracts INTERFACE engine/contracts/include)
 
@@ -66,8 +75,8 @@ add_library(arena_ecs STATIC
   engine/ecs/src/registry.cpp
   engine/ecs/src/camera_system.cpp
 )
-target_include_directories(arena_ecs PUBLIC engine/ecs/include)
-target_link_libraries(arena_ecs PUBLIC arena_core)
+target_include_directories(arena_ecs PUBLIC engine/ecs/include engine/core/include)
+# target_link_libraries(arena_ecs PUBLIC arena_core)  # Temporarily disabled for E3
 
 # Tests (Catch2 is in vcpkg manifest)
 find_package(Catch2 CONFIG REQUIRED)
@@ -101,3 +110,11 @@ add_executable(test_opengl45_text tests/e2/test_opengl45_text.cpp)
 target_include_directories(test_opengl45_text PRIVATE engine/core/include engine/ecs/include)
 target_link_libraries(test_opengl45_text PRIVATE arena_core glad glfw opengl32)
 add_test(NAME opengl45_text COMMAND test_opengl45_text)
+
+# E3 tests (Graphics System)
+add_executable(e3_tests
+  tests/e3/test_shader_path.cpp
+)
+target_include_directories(e3_tests PRIVATE engine/gfx/include vcpkg_installed/x64-windows/include)
+target_link_libraries(e3_tests PRIVATE arena_gfx Catch2::Catch2WithMain)
+add_test(NAME e3_tests COMMAND e3_tests)

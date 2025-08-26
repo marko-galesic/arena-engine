@@ -3,18 +3,18 @@
 #include <thread>
 #include <string>
 #include <vector>
+
+// OpenGL API header - must be included first
+#include "arena/gl_api.hpp"
+
 #include "app/Clock.hpp"
 #include "app/Config.hpp"
 #include "arena/input.hpp"
 #include "arena/ecs/registry.hpp"
 #include "arena/ecs/camera_system.hpp"
 #include "arena/text.hpp"
-
-// Define this to include GLFW in the unified OpenGL API header
-#define ARENA_NEED_GLFW
-
-// Unified OpenGL API header
-#include "arena/gl_api.hpp"
+#include "arena/gfx/gl_context.hpp"
+#include "arena/gfx/shader.hpp"
 
 // High-resolution timer wrapper using standard C++ chrono
 static double NowSeconds() {
@@ -38,7 +38,7 @@ static arena::ecs::Entity g_cameraEntityId = 0;
 // Input state accessor
 arena::InputState& getInputState() { return g_inputState; }
 
-// GLFW callback functions
+// GLFW callback functions (these will be set up by the GL context)
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     arena::handleKey(g_inputState, key, action);
 }
@@ -126,84 +126,37 @@ int main(int argc, char* argv[]) {
         LOG("Warning: Could not load config from " << args.configPath << ", using defaults");
     }
     
-    GLFWwindow* window = nullptr;
+    arena::gfx::GLContext glContext;
+    arena::gfx::Shader unlitShader;
     
     if (args.server) {
         LOG("Running in HEADLESS mode (--server)");
     } else {
         LOG("Running in WINDOWED mode");
         
-        // Initialize GLFW
-        if (!glfwInit()) {
-            LOG("ERROR: Failed to initialize GLFW");
-            return -1;
-        }
-        
-        // Set OpenGL 4.5 context hints for modern features
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-        
-        // Create window
-        window = glfwCreateWindow(config.window_w, config.window_h, "Arena Engine", nullptr, nullptr);
-        if (!window) {
-            LOG("ERROR: Failed to create GLFW window");
-            glfwTerminate();
+        // Initialize GL context with OpenGL 4.5 core profile and sRGB
+        if (!glContext.initialize(config.window_w, config.window_h, "Arena Engine")) {
+            LOG("ERROR: Failed to initialize GL context");
             return -1;
         }
         
         // Set input callbacks
-        glfwSetKeyCallback(window, keyCallback);
-        glfwSetCursorPosCallback(window, cursorPosCallback);
-        glfwSetMouseButtonCallback(window, mouseButtonCallback);
+        glContext.setKeyCallback(keyCallback);
+        glContext.setCursorPosCallback(cursorPosCallback);
+        glContext.setMouseButtonCallback(mouseButtonCallback);
         
-        // Make context current
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
-        
-        // Initialize GLAD2 after creating the context
-        if (!arena_load_gl()) { 
-            fprintf(stderr, "gladLoadGL failed\n"); 
-            std::abort(); 
-        }
-        
-        // Verify OpenGL 4.5 is available for text rendering
-        GLint major, minor;
-        glGetIntegerv(GL_MAJOR_VERSION, &major);
-        glGetIntegerv(GL_MINOR_VERSION, &minor);
-        if (major < 4 || (major == 4 && minor < 5)) {
-            LOG("ERROR: OpenGL 4.5 required for text rendering, but got version " << major << "." << minor);
-            glfwDestroyWindow(window);
-            glfwTerminate();
+        // Load unlit shader
+        if (!unlitShader.load("assets/shaders/unlit")) {
+            LOG("ERROR: Failed to load unlit shader");
             return -1;
         }
-        LOG("OpenGL " << major << "." << minor << " context created successfully");
+        LOG("Unlit shader loaded successfully");
         
-        // Quick runtime sanity (helps catch accidental mixing)
-        fprintf(stderr, "GL: %s | %s | %s\n",
-          (const char*)glGetString(GL_VENDOR),
-          (const char*)glGetString(GL_RENDERER),
-          (const char*)glGetString(GL_VERSION));
-        
-        if (!glCreateShader || !glBufferData || !glDrawArrays) {
-          fprintf(stderr, "GL function pointers are null (likely wrong GLAD combo)\n");
-          std::abort();
-        }
-        
-        // Check for OpenGL errors
-        GLenum err;
-        while ((err = glGetError()) != GL_NO_ERROR) {
-            LOG("OpenGL error after GLAD2 initialization: " << err);
-        }
-        
-        LOG("GLFW window initialized successfully");
-        
-        // Initialize text HUD system
-        LOG("About to initialize text HUD system");
+        // Initialize text HUD system (temporarily disabled)
+        // LOG("About to initialize text HUD system");
         arena::hud::TextHud_Init();
         
-        LOG("Text HUD system initialized successfully");
+        // LOG("Text HUD system initialized successfully");
         
         // Create camera entity with Transform and CameraController components
         g_cameraEntityId = g_registry.create();
@@ -352,44 +305,45 @@ int main(int argc, char* argv[]) {
             lastLogTime = now;
         }
         
-        // Process GLFW events
+        // Process GLFW events and render
         if (!args.server) {
-            glfwPollEvents();
+            glContext.pollEvents();
             
             // Check if window should close
-            if (glfwWindowShouldClose(window)) {
+            if (glContext.shouldClose()) {
                 LOG("Window close requested, exiting");
                 break;
             }
             
-            // Clear the screen with a dark blue color
-            glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
+            // Check for shader hot-reload
+            unlitShader.maybeHotReload();
+            
+            // Clear the screen
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             
-            // Set up basic OpenGL state for 3D rendering
-            glEnable(GL_DEPTH_TEST);
-            glDepthFunc(GL_LESS);
-            
             // Set up viewport
-            glViewport(0, 0, config.window_w, config.window_h);
+            int fbW = 0, fbH = 0;
+            glContext.getFramebufferSize(&fbW, &fbH);
+            glViewport(0, 0, fbW, fbH);
             
             // TODO: Add 3D scene rendering here when ready
+            // For now, just bind the shader to verify it works
+            unlitShader.bind();
             
             // Set up OpenGL state for 2D overlay rendering
             glDisable(GL_DEPTH_TEST);  // Disable depth test for 2D overlay
+            glDisable(GL_CULL_FACE);   // Disable culling for 2D overlay (fixes Y-flip winding issue)
             glEnable(GL_BLEND);        // Ensure blending is enabled for text
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             
             // Begin text HUD frame
-            int fbW = 0, fbH = 0;
-            glfwGetFramebufferSize(window, &fbW, &fbH);
             arena::hud::TextHud_BeginFrame(fbW, fbH);
             
             // Draw text HUD overlay
             arena::hud::TextHud_DrawStats(stats);
             
             // Swap buffers
-            glfwSwapBuffers(window);
+            glContext.swapBuffers();
         }
         
         // Small sleep to prevent 100% CPU usage
@@ -401,10 +355,7 @@ int main(int argc, char* argv[]) {
         arena::hud::TextHud_Shutdown();
     }
     
-    // Cleanup GLFW
-    if (!args.server) {
-        glfwTerminate();
-    }
+    // GL context cleanup is handled by destructor
     
     double totalTime = NowSeconds() - startTime;
     double finalRate = clock.ticks / totalTime;

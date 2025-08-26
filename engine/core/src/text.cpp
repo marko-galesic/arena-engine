@@ -234,8 +234,8 @@ void TextHud_DrawStats(const HudStats& s) {
     printf("TextHud_DrawStats: Drawing stats - FPS: %.1f, ms: %.2f, ticks: %llu\n", s.fps, s.ms, (unsigned long long)s.ticks);
     
     // Draw a semi-transparent background rectangle for better text readability
-    float bgX = 5.0f;
-    float bgY = 5.0f;
+    float bgX = 10.0f;
+    float bgY = 10.0f;
     float bgW = 300.0f;
     float bgH = 30.0f;
     
@@ -250,7 +250,7 @@ void TextHud_DrawStats(const HudStats& s) {
     };
     
     // Draw background using OpenGL 4.5 DSA
-    glProgramUniform4f(g_prog, g_uColor, 0.0f, 0.0f, 0.0f, 0.7f); // Semi-transparent black
+    glProgramUniform4f(g_prog, g_uColor, 0.0f, 0.0f, 0.0f, 0.9f); // Semi-transparent black
     glBindVertexArray(g_vao);
     
     const GLsizeiptr bgBytes = (GLsizeiptr)(bgVerts.size() * sizeof(float));
@@ -262,8 +262,8 @@ void TextHud_DrawStats(const HudStats& s) {
     std::snprintf(buf, sizeof(buf), "FPS: %.1f | ms: %.2f | ticks: %llu",
                   s.fps, s.ms, (unsigned long long)s.ticks);
     
-    // Use bright green color for better visibility
-    TextHud_DrawLine(10.0f, 20.0f, buf, 0.0f, 1.0f, 0.0f, 1.0f);
+    // Use bright white color for better visibility
+    TextHud_DrawLine(10.0f, 20.0f, buf, 1.0f, 1.0f, 1.0f, 1.0f);
     
     printf("TextHud_DrawStats: Draw call complete\n");
 }
