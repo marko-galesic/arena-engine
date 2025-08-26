@@ -95,3 +95,9 @@ add_executable(test_glad_init tests/e2/test_glad_init.cpp)
 target_include_directories(test_glad_init PRIVATE engine/core/include)
 target_link_libraries(test_glad_init PRIVATE glad glfw opengl32)
 add_test(NAME glad_init COMMAND test_glad_init)
+
+# OpenGL 4.5 text rendering test
+add_executable(test_opengl45_text tests/e2/test_opengl45_text.cpp)
+target_include_directories(test_opengl45_text PRIVATE engine/core/include engine/ecs/include)
+target_link_libraries(test_opengl45_text PRIVATE arena_core glad glfw opengl32)
+add_test(NAME opengl45_text COMMAND test_opengl45_text)

@@ -17,9 +17,10 @@ int main() {
     if (!glfwInit()) return 1;
 
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 
     GLFWwindow* win = glfwCreateWindow(64, 64, "glad-init", nullptr, nullptr);
     if (!win) {
@@ -56,7 +57,7 @@ int main() {
     glGetIntegerv(GL_MAJOR_VERSION,&maj);
     glGetIntegerv(GL_MINOR_VERSION,&min);
     glGetIntegerv(GL_CONTEXT_PROFILE_MASK,&mask);
-    if (maj < 3 || (maj==3 && min<3) || !(mask & GL_CONTEXT_CORE_PROFILE_BIT)) {
+    if (maj < 4 || (maj==4 && min<5) || !(mask & GL_CONTEXT_CORE_PROFILE_BIT)) {
         fprintf(stderr, "GLAD: OpenGL version/profile requirements not met\n");
         glfwDestroyWindow(win);
         glfwTerminate();

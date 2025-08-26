@@ -139,6 +139,12 @@ int main(int argc, char* argv[]) {
             return -1;
         }
         
+        // Set OpenGL 4.5 context hints for modern features
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+        
         // Create window
         window = glfwCreateWindow(config.window_w, config.window_h, "Arena Engine", nullptr, nullptr);
         if (!window) {
@@ -156,13 +162,23 @@ int main(int argc, char* argv[]) {
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
         
-        LOG("OpenGL context created successfully");
-        
         // Initialize GLAD2 after creating the context
         if (!arena_load_gl()) { 
             fprintf(stderr, "gladLoadGL failed\n"); 
             std::abort(); 
         }
+        
+        // Verify OpenGL 4.5 is available for text rendering
+        GLint major, minor;
+        glGetIntegerv(GL_MAJOR_VERSION, &major);
+        glGetIntegerv(GL_MINOR_VERSION, &minor);
+        if (major < 4 || (major == 4 && minor < 5)) {
+            LOG("ERROR: OpenGL 4.5 required for text rendering, but got version " << major << "." << minor);
+            glfwDestroyWindow(window);
+            glfwTerminate();
+            return -1;
+        }
+        LOG("OpenGL " << major << "." << minor << " context created successfully");
         
         // Quick runtime sanity (helps catch accidental mixing)
         fprintf(stderr, "GL: %s | %s | %s\n",
