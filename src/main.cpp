@@ -15,6 +15,9 @@
 #include "arena/text.hpp"
 #include "arena/gfx/gl_context.hpp"
 #include "arena/gfx/shader.hpp"
+#include "arena/gfx/mesh.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // High-resolution timer wrapper using standard C++ chrono
 static double NowSeconds() {
@@ -128,6 +131,7 @@ int main(int argc, char* argv[]) {
     
     arena::gfx::GLContext glContext;
     arena::gfx::Shader unlitShader;
+    arena::gfx::Mesh gridMesh;
     
     if (args.server) {
         LOG("Running in HEADLESS mode (--server)");
@@ -152,6 +156,10 @@ int main(int argc, char* argv[]) {
         }
         LOG("Unlit shader loaded successfully");
         
+        // Create grid mesh
+        gridMesh = arena::gfx::Mesh::makeGrid(16, 1.0f); // 16 units radius, 1.0f cell size (but we override spacing)
+        LOG("Grid mesh created successfully");
+        
         // Initialize text HUD system (temporarily disabled)
         // LOG("About to initialize text HUD system");
         arena::hud::TextHud_Init();
@@ -160,7 +168,10 @@ int main(int argc, char* argv[]) {
         
         // Create camera entity with Transform and CameraController components
         g_cameraEntityId = g_registry.create();
-        g_registry.add<arena::ecs::Transform>(g_cameraEntityId, {{0, 0, 5}, {0, 0, 0}, {1, 1, 1}});
+        g_registry.add<arena::ecs::Transform>(g_cameraEntityId,
+            {{0, 1.6f, 5},   // position: a little above the ground
+             {0, -0.35f, 0}, // yaw, pitch, roll: slight downward pitch
+             {1, 1, 1}});
         g_registry.add<arena::ecs::CameraController>(g_cameraEntityId, {5.0f, 0.002f});
         LOG("Created camera entity with ID: " << g_cameraEntityId);
     }
@@ -326,21 +337,60 @@ int main(int argc, char* argv[]) {
             glContext.getFramebufferSize(&fbW, &fbH);
             glViewport(0, 0, fbW, fbH);
             
-            // TODO: Add 3D scene rendering here when ready
-            // For now, just bind the shader to verify it works
-            unlitShader.use();
-            
-            // Set up OpenGL state for 2D overlay rendering
-            glDisable(GL_DEPTH_TEST);  // Disable depth test for 2D overlay
-            glDisable(GL_CULL_FACE);   // Disable culling for 2D overlay (fixes Y-flip winding issue)
-            glEnable(GL_BLEND);        // Ensure blending is enabled for text
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            
-            // Begin text HUD frame
-            arena::hud::TextHud_BeginFrame(fbW, fbH);
-            
-            // Draw text HUD overlay
-            arena::hud::TextHud_DrawStats(stats);
+            // Get camera transform for view matrix
+            auto* cameraTransform = g_registry.get<arena::ecs::Transform>(g_cameraEntityId);
+            if (cameraTransform) {
+                // View = R_x(-pitch) * R_y(-yaw) * T(-pos)
+                glm::mat4 view = glm::mat4(1.0f);
+                glm::vec3 camPos(
+                    cameraTransform->pos[0],
+                    cameraTransform->pos[1],
+                    cameraTransform->pos[2]
+                );
+                float yaw   = cameraTransform->rotYawPitchRoll[0];
+                float pitch = cameraTransform->rotYawPitchRoll[1];
+
+                view = glm::rotate(view, -pitch, glm::vec3(1.0f, 0.0f, 0.0f));
+                view = glm::rotate(view, -yaw,   glm::vec3(0.0f, 1.0f, 0.0f));
+                view = glm::translate(view, -camPos);
+
+                // Projection
+                float aspect = static_cast<float>(fbW) / static_cast<float>(fbH);
+                glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
+
+                // VP
+                glm::mat4 VP = projection * view;
+
+                // Background + clear
+                glClearColor(0.1f, 0.1f, 0.12f, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                // Render grid
+                glEnable(GL_DEPTH_TEST);
+                glDisable(GL_CULL_FACE);
+
+                unlitShader.use();
+                GLint mvpLoc = unlitShader.uni("uMVP");
+                if (mvpLoc != -1) {
+                    glm::mat4 model = glm::mat4(1.0f);
+                    glm::mat4 MVP   = VP * model;
+                    glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, &MVP[0][0]);
+                }
+
+                gridMesh.bind();
+                glDrawElements(GL_TRIANGLES, gridMesh.indexCount, GL_UNSIGNED_INT, 0);
+
+                // Set up OpenGL state for 2D overlay rendering
+                glDisable(GL_DEPTH_TEST);  // Disable depth test for 2D overlay
+                glEnable(GL_BLEND);        // Ensure blending is enabled for text
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                
+                // Begin text HUD frame
+                arena::hud::TextHud_BeginFrame(fbW, fbH);
+                
+                // Draw text HUD overlay
+                arena::hud::TextHud_DrawStats(stats);
+            }
             
             // Swap buffers
             glContext.swapBuffers();
@@ -353,6 +403,7 @@ int main(int argc, char* argv[]) {
     // Cleanup text HUD system
     if (!args.server) {
         arena::hud::TextHud_Shutdown();
+        gridMesh.destroy();
     }
     
     // GL context cleanup is handled by destructor

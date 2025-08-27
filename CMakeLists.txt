@@ -65,6 +65,8 @@ add_library(arena_gfx STATIC
   engine/gfx/src/gl_context.cpp
   engine/gfx/src/shader.cpp
   engine/gfx/src/renderer.cpp
+  engine/gfx/src/mesh.cpp
+  engine/gfx/src/material.cpp
 )
 target_include_directories(arena_gfx PUBLIC engine/gfx/include engine/core/include vcpkg_installed/x64-windows/include)
 target_link_libraries(arena_gfx PUBLIC glad glfw opengl32)
