@@ -64,7 +64,7 @@ void CameraSystem::update(float dt, const arena::InputState& input, Registry& re
         
         // Yaw rotation (left/right mouse movement)
         if (input.mouseDx != 0.0) {
-            transform.rotYawPitchRoll[0] += input.mouseDx * lookSensitivity;
+            transform.rotYawPitchRoll[0] -= input.mouseDx * lookSensitivity;
         }
         
         // Pitch rotation (up/down mouse movement)

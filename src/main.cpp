@@ -172,7 +172,7 @@ int main(int argc, char* argv[]) {
             {{0, 1.6f, 5},   // position: a little above the ground
              {0, -0.35f, 0}, // yaw, pitch, roll: slight downward pitch
              {1, 1, 1}});
-        g_registry.add<arena::ecs::CameraController>(g_cameraEntityId, {5.0f, 0.002f});
+        g_registry.add<arena::ecs::CameraController>(g_cameraEntityId, {5.0f, 0.01f});
         LOG("Created camera entity with ID: " << g_cameraEntityId);
     }
     
@@ -212,6 +212,7 @@ int main(int argc, char* argv[]) {
         // Begin frame for input system
         if (!args.server) {
             arena::beginFrame(g_inputState);
+            glContext.pollEvents();
             
             // Update camera system with current input state
             g_cameraSystem.update(frame, g_inputState, g_registry);
@@ -318,8 +319,6 @@ int main(int argc, char* argv[]) {
         
         // Process GLFW events and render
         if (!args.server) {
-            glContext.pollEvents();
-            
             // Check if window should close
             if (glContext.shouldClose()) {
                 LOG("Window close requested, exiting");

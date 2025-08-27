@@ -13,7 +13,8 @@ void beginFrame(InputState& state) {
 void handleKey(InputState& state, int key, int action) {
     if (key >= 0 && key < 512) {
         // GLFW_PRESS = 1, GLFW_RELEASE = 0, GLFW_REPEAT = 2
-        state.keys[key] = (action == 1); // true for press, false for release/repeat
+        // pressed on PRESS/REPEAT, false only on RELEASE
+        state.keys[key] = (action != 0);
     }
 }
 
