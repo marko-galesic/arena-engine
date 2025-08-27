@@ -7,47 +7,39 @@
 
 namespace arena::gfx {
 
-Shader::Shader() : programId_(0) {
-}
-
-Shader::~Shader() {
-    cleanup();
-}
-
-bool Shader::load(const std::string& basePath) {
-    // Construct paths for vertex and fragment shaders
-    vertexPath_ = basePath + ".vert";
-    fragmentPath_ = basePath + ".frag";
+bool Shader::load(const char* vs, const char* fs) {
+    vsPath = vs;
+    fsPath = fs;
     
     // Check if files exist
-    if (!std::filesystem::exists(vertexPath_) || !std::filesystem::exists(fragmentPath_)) {
-        std::cerr << "ERROR: Shader files not found: " << vertexPath_ << " or " << fragmentPath_ << std::endl;
+    if (!std::filesystem::exists(vsPath) || !std::filesystem::exists(fsPath)) {
+        std::cerr << "ERROR: Shader files not found: " << vsPath << " or " << fsPath << std::endl;
         return false;
     }
     
     // Get initial file timestamps
-    vertexLastWrite_ = getFileLastWriteTime(vertexPath_);
-    fragmentLastWrite_ = getFileLastWriteTime(fragmentPath_);
+    vsM = std::filesystem::last_write_time(vsPath);
+    fsM = std::filesystem::last_write_time(fsPath);
     
     // Load and compile shaders
     return compileAndLink();
 }
 
-bool Shader::maybeHotReload() {
-    if (programId_ == 0) {
+bool Shader::reloadIfChanged() {
+    if (prog == 0) {
         return false;
     }
     
     // Check if files have been modified
-    auto currentVertexTime = getFileLastWriteTime(vertexPath_);
-    auto currentFragmentTime = getFileLastWriteTime(fragmentPath_);
+    auto currentVsTime = std::filesystem::last_write_time(vsPath);
+    auto currentFsTime = std::filesystem::last_write_time(fsPath);
     
-    if (currentVertexTime > vertexLastWrite_ || currentFragmentTime > fragmentLastWrite_) {
-        std::cout << "[shader] reloading " << vertexPath_ << " and " << fragmentPath_ << std::endl;
+    if (currentVsTime > vsM || currentFsTime > fsM) {
+        std::cout << "[shader] reloading " << vsPath << " and " << fsPath << std::endl;
         
         // Update timestamps
-        vertexLastWrite_ = currentVertexTime;
-        fragmentLastWrite_ = currentFragmentTime;
+        vsM = currentVsTime;
+        fsM = currentFsTime;
         
         // Recompile and relink
         if (compileAndLink()) {
@@ -62,71 +54,67 @@ bool Shader::maybeHotReload() {
     return false;
 }
 
-GLint Shader::getUniformLocation(const std::string& name) const {
-    if (programId_ == 0) {
+void Shader::use() const {
+    if (prog != 0) {
+        glUseProgram(prog);
+    }
+}
+
+GLint Shader::uni(const char* name) const {
+    if (prog == 0) {
         return -1;
     }
-    return glGetUniformLocation(programId_, name.c_str());
-}
-
-void Shader::bind() const {
-    if (programId_ != 0) {
-        glUseProgram(programId_);
-    }
-}
-
-void Shader::unbind() const {
-    glUseProgram(0);
+    return glGetUniformLocation(prog, name);
 }
 
 bool Shader::compileAndLink() {
     // Read vertex shader source
-    std::ifstream vertexFile(vertexPath_);
-    if (!vertexFile.is_open()) {
-        std::cerr << "ERROR: Could not open vertex shader: " << vertexPath_ << std::endl;
+    std::ifstream vsFile(vsPath);
+    if (!vsFile.is_open()) {
+        std::cerr << "ERROR: Could not open vertex shader: " << vsPath << std::endl;
         return false;
     }
     
-    std::stringstream vertexStream;
-    vertexStream << vertexFile.rdbuf();
-    std::string vertexSource = vertexStream.str();
-    vertexFile.close();
+    std::stringstream vsStream;
+    vsStream << vsFile.rdbuf();
+    std::string vsSource = vsStream.str();
+    vsFile.close();
     
     // Read fragment shader source
-    std::ifstream fragmentFile(fragmentPath_);
-    if (!fragmentFile.is_open()) {
-        std::cerr << "ERROR: Could not open fragment shader: " << fragmentPath_ << std::endl;
+    std::ifstream fsFile(fsPath);
+    if (!fsFile.is_open()) {
+        std::cerr << "ERROR: Could not open fragment shader: " << fsPath << std::endl;
         return false;
     }
     
-    std::stringstream fragmentStream;
-    fragmentStream << fragmentFile.rdbuf();
-    std::string fragmentSource = fragmentStream.str();
-    fragmentFile.close();
+    std::stringstream fsStream;
+    fsStream << fsFile.rdbuf();
+    std::string fsSource = fsStream.str();
+    fsFile.close();
     
     // Compile vertex shader
-    GLuint vertexShader = compileShader(vertexSource, GL_VERTEX_SHADER);
-    if (vertexShader == 0) {
+    GLuint vsShader = compileShader(vsSource, GL_VERTEX_SHADER);
+    if (vsShader == 0) {
         return false;
     }
     
     // Compile fragment shader
-    GLuint fragmentShader = compileShader(fragmentSource, GL_FRAGMENT_SHADER);
-    if (fragmentShader == 0) {
-        glDeleteShader(vertexShader);
+    GLuint fsShader = compileShader(fsSource, GL_FRAGMENT_SHADER);
+    if (fsShader == 0) {
+        glDeleteShader(vsShader);
         return false;
     }
     
     // Link program
-    if (!linkProgram(vertexShader, fragmentShader)) {
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
+    if (!linkProgram(vsShader, fsShader)) {
+        glDeleteShader(vsShader);
+        glDeleteShader(fsShader);
         return false;
     }
     
     // Clean up shaders (they're now linked into the program)
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    glDeleteShader(vsShader);
+    glDeleteShader(fsShader);
     
     return true;
 }
@@ -150,27 +138,31 @@ GLuint Shader::compileShader(const std::string& source, GLenum type) {
     return shader;
 }
 
-bool Shader::linkProgram(GLuint vertexShader, GLuint fragmentShader) {
+bool Shader::linkProgram(GLuint vsShader, GLuint fsShader) {
     // Clean up previous program if it exists
-    cleanup();
+    if (prog != 0) {
+        glDeleteProgram(prog);
+        prog = 0;
+    }
     
     // Create program
-    programId_ = glCreateProgram();
-    if (programId_ == 0) {
+    prog = glCreateProgram();
+    if (prog == 0) {
         std::cerr << "ERROR: Could not create shader program" << std::endl;
         return false;
     }
     
     // Attach shaders
-    glAttachShader(programId_, vertexShader);
-    glAttachShader(programId_, fragmentShader);
+    glAttachShader(prog, vsShader);
+    glAttachShader(prog, fsShader);
     
     // Link program
-    glLinkProgram(programId_);
+    glLinkProgram(prog);
     
     // Check linking status
-    if (!checkProgramLinking(programId_)) {
-        cleanup();
+    if (!checkProgramLinking(prog)) {
+        glDeleteProgram(prog);
+        prog = 0;
         return false;
     }
     
@@ -211,22 +203,6 @@ bool Shader::checkProgramLinking(GLuint program) {
     }
     
     return true;
-}
-
-std::chrono::file_clock::time_point Shader::getFileLastWriteTime(const std::string& path) {
-    try {
-        return std::filesystem::last_write_time(path);
-    } catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "WARNING: Could not get file time for " << path << ": " << e.what() << std::endl;
-        return std::chrono::file_clock::time_point::min();
-    }
-}
-
-void Shader::cleanup() {
-    if (programId_ != 0) {
-        glDeleteProgram(programId_);
-        programId_ = 0;
-    }
 }
 
 } // namespace arena::gfx

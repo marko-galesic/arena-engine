@@ -11,8 +11,8 @@ TEST_CASE("Shader path assembly", "[shader]") {
     
     SECTION("Invalid base path") {
         std::string invalidPath = "nonexistent/path";
-        REQUIRE_FALSE(shader.load(invalidPath));
-        REQUIRE_FALSE(shader.isValid());
+        REQUIRE_FALSE(shader.load((invalidPath + ".vert").c_str(), (invalidPath + ".frag").c_str()));
+        REQUIRE_FALSE(shader.prog != 0);
     }
 }
 
@@ -66,12 +66,12 @@ TEST_CASE("Shader uniform location", "[shader]") {
     
     SECTION("Invalid shader") {
         // Should return -1 for invalid shader
-        REQUIRE(shader.getUniformLocation("uMVP") == -1);
+        REQUIRE(shader.uni("uMVP") == -1);
     }
     
     SECTION("Valid shader with uniforms") {
         // This test would require a valid shader with known uniforms
         // For now, we'll just test the basic functionality
-        REQUIRE(shader.getUniformLocation("nonexistent") == -1);
+        REQUIRE(shader.uni("nonexistent") == -1);
     }
 }

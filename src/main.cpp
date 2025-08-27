@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
         glContext.setMouseButtonCallback(mouseButtonCallback);
         
         // Load unlit shader
-        if (!unlitShader.load("assets/shaders/unlit")) {
+        if (!unlitShader.load("assets/shaders/unlit.vert", "assets/shaders/unlit.frag")) {
             LOG("ERROR: Failed to load unlit shader");
             return -1;
         }
@@ -316,7 +316,7 @@ int main(int argc, char* argv[]) {
             }
             
             // Check for shader hot-reload
-            unlitShader.maybeHotReload();
+            unlitShader.reloadIfChanged();
             
             // Clear the screen
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -328,7 +328,7 @@ int main(int argc, char* argv[]) {
             
             // TODO: Add 3D scene rendering here when ready
             // For now, just bind the shader to verify it works
-            unlitShader.bind();
+            unlitShader.use();
             
             // Set up OpenGL state for 2D overlay rendering
             glDisable(GL_DEPTH_TEST);  // Disable depth test for 2D overlay

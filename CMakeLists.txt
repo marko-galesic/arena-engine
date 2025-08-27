@@ -64,6 +64,7 @@ target_link_libraries(arena_core PUBLIC glad glfw)
 add_library(arena_gfx STATIC
   engine/gfx/src/gl_context.cpp
   engine/gfx/src/shader.cpp
+  engine/gfx/src/renderer.cpp
 )
 target_include_directories(arena_gfx PUBLIC engine/gfx/include engine/core/include vcpkg_installed/x64-windows/include)
 target_link_libraries(arena_gfx PUBLIC glad glfw opengl32)
@@ -114,6 +115,9 @@ add_test(NAME opengl45_text COMMAND test_opengl45_text)
 # E3 tests (Graphics System)
 add_executable(e3_tests
   tests/e3/test_shader_path.cpp
+  tests/e3/test_renderer.cpp
+  tests/e3/test_hot_reload.cpp
+  tests/e3/test_hot_reload_demo.cpp
 )
 target_include_directories(e3_tests PRIVATE engine/gfx/include vcpkg_installed/x64-windows/include)
 target_link_libraries(e3_tests PRIVATE arena_gfx Catch2::Catch2WithMain)
