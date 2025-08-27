@@ -11,11 +11,58 @@ bool Shader::load(const char* vs, const char* fs) {
     vsPath = vs;
     fsPath = fs;
     
-    // Check if files exist
-    if (!std::filesystem::exists(vsPath) || !std::filesystem::exists(fsPath)) {
+    // Try multiple paths to find the shader files
+    std::vector<std::string> vsSearchPaths = {
+        vsPath,                                    // Direct path
+        "../../" + vsPath,                        // From build/Debug
+        "../" + vsPath,                           // From build
+        "../../../" + vsPath,                     // From build/Debug (alternative)
+        "../../../assets/shaders/" + std::filesystem::path(vsPath).filename().string(), // Just filename
+        "assets/shaders/" + std::filesystem::path(vsPath).filename().string()          // Just filename
+    };
+    
+    std::vector<std::string> fsSearchPaths = {
+        fsPath,                                    // Direct path
+        "../../" + fsPath,                        // From build/Debug
+        "../" + fsPath,                           // From build
+        "../../../" + fsPath,                     // From build/Debug (alternative)
+        "../../../assets/shaders/" + std::filesystem::path(fsPath).filename().string(), // Just filename
+        "assets/shaders/" + std::filesystem::path(fsPath).filename().string()          // Just filename
+    };
+    
+    // Find the first valid vertex shader path
+    std::string foundVsPath;
+    for (const auto& path : vsSearchPaths) {
+        if (std::filesystem::exists(path)) {
+            foundVsPath = path;
+            break;
+        }
+    }
+    
+    // Find the first valid fragment shader path
+    std::string foundFsPath;
+    for (const auto& path : fsSearchPaths) {
+        if (std::filesystem::exists(path)) {
+            foundFsPath = path;
+            break;
+        }
+    }
+    
+    if (foundVsPath.empty() || foundFsPath.empty()) {
         std::cerr << "ERROR: Shader files not found: " << vsPath << " or " << fsPath << std::endl;
+        std::cerr << "Tried paths:" << std::endl;
+        for (const auto& path : vsSearchPaths) {
+            std::cerr << "  VS: " << path << std::endl;
+        }
+        for (const auto& path : fsSearchPaths) {
+            std::cerr << "  FS: " << path << std::endl;
+        }
         return false;
     }
+    
+    // Update paths to the found ones
+    vsPath = foundVsPath;
+    fsPath = foundFsPath;
     
     // Get initial file timestamps
     vsM = std::filesystem::last_write_time(vsPath);
