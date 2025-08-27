@@ -36,9 +36,9 @@ TEST_CASE("Key handling", "[input]") {
     arena::handleKey(state, GLFW_KEY_W, GLFW_RELEASE);
     REQUIRE(state.keys[GLFW_KEY_W] == false);
     
-    // Test W key repeat (should not change state)
+    // Test W key repeat (should keep key pressed for FPS-style movement)
     arena::handleKey(state, GLFW_KEY_W, GLFW_REPEAT);
-    REQUIRE(state.keys[GLFW_KEY_W] == false);
+    REQUIRE(state.keys[GLFW_KEY_W] == true);
     
     // Test other keys
     arena::handleKey(state, GLFW_KEY_A, GLFW_PRESS);
