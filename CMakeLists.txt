@@ -56,6 +56,7 @@ add_test(NAME Headless COMMAND it_headless)
 add_library(arena_core STATIC
   engine/core/src/input.cpp
   engine/core/src/text.cpp
+  engine/core/src/sun_lighting.cpp
 )
 target_include_directories(arena_core PUBLIC engine/core/include vcpkg_installed/x64-windows/include)
 target_link_libraries(arena_core PUBLIC glad glfw)

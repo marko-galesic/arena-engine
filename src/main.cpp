@@ -16,6 +16,7 @@
 #include "arena/gfx/gl_context.hpp"
 #include "arena/gfx/shader.hpp"
 #include "arena/gfx/mesh.hpp"
+#include "arena/sun_lighting.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -37,6 +38,9 @@ static arena::InputState g_inputState;
 static arena::ecs::Registry g_registry;
 static arena::ecs::CameraSystem g_cameraSystem;
 static arena::ecs::Entity g_cameraEntityId = 0;
+
+// Global sun lighting system
+static arena::SunLighting g_sunLighting;
 
 // Input state accessor
 arena::InputState& getInputState() { return g_inputState; }
@@ -129,9 +133,11 @@ int main(int argc, char* argv[]) {
         LOG("Warning: Could not load config from " << args.configPath << ", using defaults");
     }
     
-    arena::gfx::GLContext glContext;
-    arena::gfx::Shader unlitShader;
+        arena::gfx::GLContext glContext;
+    arena::gfx::Shader basicShader;
     arena::gfx::Mesh gridMesh;
+    arena::gfx::Mesh coordinateAxesMesh;
+    arena::gfx::Mesh centerCubeMesh;
     
     if (args.server) {
         LOG("Running in HEADLESS mode (--server)");
@@ -149,16 +155,24 @@ int main(int argc, char* argv[]) {
         glContext.setCursorPosCallback(cursorPosCallback);
         glContext.setMouseButtonCallback(mouseButtonCallback);
         
-        // Load unlit shader
-        if (!unlitShader.load("assets/shaders/unlit.vert", "assets/shaders/unlit.frag")) {
-            LOG("ERROR: Failed to load unlit shader");
+        // Load basic shader (with lighting support)
+        if (!basicShader.load("assets/shaders/basic.vert", "assets/shaders/basic.frag")) {
+            LOG("ERROR: Failed to load basic shader");
             return -1;
         }
-        LOG("Unlit shader loaded successfully");
+        LOG("Basic shader loaded successfully");
         
         // Create grid mesh
         gridMesh = arena::gfx::Mesh::makeGrid(16, 1.0f); // 16 units radius, 1.0f cell size (but we override spacing)
         LOG("Grid mesh created successfully");
+        
+        // Create coordinate axes mesh with thicker X and Z axes
+        coordinateAxesMesh = arena::gfx::Mesh::makeCoordinateAxes(5.0f, 0.15f); // 5 units long, thicker axes
+        LOG("Coordinate axes mesh created successfully");
+        
+        // Create center cube mesh (3x3x3 units)
+        centerCubeMesh = arena::gfx::Mesh::makeColoredCube(1.5f, 0.5f, 0.5f, 0.5f); // Grey cube // 1.5 units radius = 3x3x3 cube
+        LOG("Center cube mesh created successfully");
         
         // Initialize text HUD system (temporarily disabled)
         // LOG("About to initialize text HUD system");
@@ -277,6 +291,25 @@ int main(int argc, char* argv[]) {
                 LOG("Mouse moved: dx=" << g_inputState.mouseDx << " dy=" << g_inputState.mouseDy);
             }
             
+            // Handle sun time controls
+            static bool lastLeftBracket = false, lastRightBracket = false;
+            
+            if (g_inputState.keys[GLFW_KEY_LEFT_BRACKET] != lastLeftBracket) {
+                lastLeftBracket = g_inputState.keys[GLFW_KEY_LEFT_BRACKET];
+                if (lastLeftBracket) {
+                    g_sunLighting.adjustTime(-1.0f); // Move time backward by 1 hour
+                    LOG("Sun time adjusted: " << g_sunLighting.getTimeOfDay() << ":00");
+                }
+            }
+            
+            if (g_inputState.keys[GLFW_KEY_RIGHT_BRACKET] != lastRightBracket) {
+                lastRightBracket = g_inputState.keys[GLFW_KEY_RIGHT_BRACKET];
+                if (lastRightBracket) {
+                    g_sunLighting.adjustTime(1.0f); // Move time forward by 1 hour
+                    LOG("Sun time adjusted: " << g_sunLighting.getTimeOfDay() << ":00");
+                }
+            }
+            
             // Show current key states every 60 frames for debugging
             static int keyDebugCounter = 0;
             if (++keyDebugCounter % 60 == 0) {
@@ -326,7 +359,7 @@ int main(int argc, char* argv[]) {
             }
             
             // Check for shader hot-reload
-            unlitShader.reloadIfChanged();
+            basicShader.reloadIfChanged();
             
             // Clear the screen
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -360,24 +393,59 @@ int main(int argc, char* argv[]) {
                 // VP
                 glm::mat4 VP = projection * view;
 
-                // Background + clear
-                glClearColor(0.1f, 0.1f, 0.12f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
                 // Render grid
                 glEnable(GL_DEPTH_TEST);
                 glDisable(GL_CULL_FACE);
 
-                unlitShader.use();
-                GLint mvpLoc = unlitShader.uni("uMVP");
-                if (mvpLoc != -1) {
-                    glm::mat4 model = glm::mat4(1.0f);
-                    glm::mat4 MVP   = VP * model;
-                    glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, &MVP[0][0]);
+                basicShader.use();
+                
+                // Set view and projection matrices
+                GLint viewLoc = basicShader.uni("uV");
+                GLint projLoc = basicShader.uni("uP");
+                GLint modelLoc = basicShader.uni("uM");
+                
+                if (viewLoc != -1) {
+                    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
                 }
+                if (projLoc != -1) {
+                    glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+                }
+                
+                // Set sun lighting uniforms
+                GLint sunDirLoc = basicShader.uni("uSunDir");
+                GLint sunColorLoc = basicShader.uni("uSunColor");
+                
+                if (sunDirLoc != -1) {
+                    glm::vec3 sunDir = g_sunLighting.getSunDirection();
+                    glUniform3fv(sunDirLoc, 1, &sunDir[0]);
+                }
+                if (sunColorLoc != -1) {
+                    glm::vec3 sunColor = g_sunLighting.getSunColor();
+                    glUniform3fv(sunColorLoc, 1, &sunColor[0]);
+                }
+                
+                // Set background color based on sun lighting
+                glm::vec3 ambientColor = g_sunLighting.getAmbientColor();
+                glClearColor(ambientColor.r, ambientColor.g, ambientColor.b, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+                // Render grid
+                if (modelLoc != -1) {
+                    glm::mat4 model = glm::mat4(1.0f);
+                    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+                }
                 gridMesh.bind();
                 glDrawElements(GL_TRIANGLES, gridMesh.indexCount, GL_UNSIGNED_INT, 0);
+
+                // Render coordinate axes
+                coordinateAxesMesh.bind();
+                glDrawElements(GL_TRIANGLES, coordinateAxesMesh.indexCount, GL_UNSIGNED_INT, 0);
+
+                // Render center cube
+                centerCubeMesh.bind();
+                glDrawElements(GL_TRIANGLES, centerCubeMesh.indexCount, GL_UNSIGNED_INT, 0);
 
                 // Set up OpenGL state for 2D overlay rendering
                 glDisable(GL_DEPTH_TEST);  // Disable depth test for 2D overlay
@@ -389,6 +457,16 @@ int main(int argc, char* argv[]) {
                 
                 // Draw text HUD overlay
                 arena::hud::TextHud_DrawStats(stats);
+                
+                // Draw sun time info
+                char timeStr[32];
+                snprintf(timeStr, sizeof(timeStr), "Sun Time: %.1f:00", g_sunLighting.getTimeOfDay());
+                arena::hud::TextHud_DrawLine(10, 100, timeStr, 0.8f, 0.8f, 1.0f);
+                
+                // Draw sun direction info
+                glm::vec3 sunDir = g_sunLighting.getSunDirection();
+                snprintf(timeStr, sizeof(timeStr), "Sun Dir: (%.2f, %.2f, %.2f)", sunDir.x, sunDir.y, sunDir.z);
+                arena::hud::TextHud_DrawLine(10, 120, timeStr, 0.8f, 0.8f, 1.0f);
             }
             
             // Swap buffers
@@ -403,6 +481,8 @@ int main(int argc, char* argv[]) {
     if (!args.server) {
         arena::hud::TextHud_Shutdown();
         gridMesh.destroy();
+        coordinateAxesMesh.destroy();
+        centerCubeMesh.destroy();
     }
     
     // GL context cleanup is handled by destructor
